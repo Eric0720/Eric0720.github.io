@@ -22,6 +22,8 @@
 
 
 
+  <meta name="keywords" content="flume,flink,kafka, 随记" />
+
 
 
 
@@ -187,8 +189,8 @@
         
           <span class="post-updated">
           &nbsp; | &nbsp; 更新于
-          <time itemprop="dateUpdated" datetime="2019-08-15T17:49:08+08:00" content="2019-08-15">
-          2019-08-15
+          <time itemprop="dateUpdated" datetime="2019-08-16T11:14:05+08:00" content="2019-08-16">
+          2019-08-16
           </time>
           </span>
        
@@ -221,6 +223,9 @@
 </li>
 </ul>
 <a id="more"></a>
+<ul>
+<li>这里原应有一个流程图，但是不知道为何markdown不支持flow流程图</li>
+</ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">A[scribe] --&gt; B[disk] </span><br><span class="line">A --&gt; C(hdfs)</span><br><span class="line">B --&gt; D[python ThriftFlumeEvent发送到flume]</span><br><span class="line">D --&gt; F[Flume]</span><br><span class="line">F --sink--&gt; G[kafka]</span><br><span class="line">G--scala--&gt; H[flink]</span><br></pre></td></tr></table></figure>
 <p><strong>本机系统：</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Ubuntu 16.04</span><br><span class="line">conda环境下的python 3.7</span><br></pre></td></tr></table></figure>
@@ -413,9 +418,21 @@
     
       <footer class="post-footer">
         
+          <div class="post-tags">
+            
+              <a href="/tags/flume-flink-kafka/">flume,flink,kafka</a>
+            
+          </div>
+        
         
         
   <nav class="post-nav">
+    
+      <a class="prev" href="/2019/08/16/通过Thrift-source向Flume发送数据的Python实现/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">通过Thrift source向Flume发送数据的Python实现</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
     
     
       <a class="next" href="/2019/05/10/今日更新-1/">
