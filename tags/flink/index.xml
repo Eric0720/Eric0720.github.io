@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>flink on Eric&#39;s blog - A super concise theme for Hugo</title>
-    <link>http://localhost:1313/tags/flink/</link>
+    <link>http://blog.eric7.site/tags/flink/</link>
     <description>Recent content in flink on Eric&#39;s blog - A super concise theme for Hugo</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Thu, 15 Aug 2019 16:23:13 +0800</lastBuildDate>
     
-	<atom:link href="http://localhost:1313/tags/flink/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://blog.eric7.site/tags/flink/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Flume&#43;Kafka&#43;Flink&#43;Redis构建大数据实时处理系统（单机环境）--环境篇</title>
-      <link>http://localhost:1313/2019/08/15/flume-kafka-flink-redis%E6%9E%84%E5%BB%BA%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%AE%9E%E6%97%B6%E5%A4%84%E7%90%86%E7%B3%BB%E7%BB%9F%E5%8D%95%E6%9C%BA%E7%8E%AF%E5%A2%83-%E7%8E%AF%E5%A2%83%E7%AF%87/</link>
+      <link>http://blog.eric7.site/2019/08/15/flume-kafka-flink-redis%E6%9E%84%E5%BB%BA%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%AE%9E%E6%97%B6%E5%A4%84%E7%90%86%E7%B3%BB%E7%BB%9F%E5%8D%95%E6%9C%BA%E7%8E%AF%E5%A2%83-%E7%8E%AF%E5%A2%83%E7%AF%87/</link>
       <pubDate>Thu, 15 Aug 2019 16:23:13 +0800</pubDate>
       
-      <guid>http://localhost:1313/2019/08/15/flume-kafka-flink-redis%E6%9E%84%E5%BB%BA%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%AE%9E%E6%97%B6%E5%A4%84%E7%90%86%E7%B3%BB%E7%BB%9F%E5%8D%95%E6%9C%BA%E7%8E%AF%E5%A2%83-%E7%8E%AF%E5%A2%83%E7%AF%87/</guid>
+      <guid>http://blog.eric7.site/2019/08/15/flume-kafka-flink-redis%E6%9E%84%E5%BB%BA%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%AE%9E%E6%97%B6%E5%A4%84%E7%90%86%E7%B3%BB%E7%BB%9F%E5%8D%95%E6%9C%BA%E7%8E%AF%E5%A2%83-%E7%8E%AF%E5%A2%83%E7%AF%87/</guid>
       <description>大体流程： python readlog 读取本地日志文件发送到flume(本测试基于原有项目，原有项目是有scribe接收日志存到本地。正式项目flume直接读取本地</description>
     </item>
     
