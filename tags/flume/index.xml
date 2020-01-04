@@ -2,30 +2,30 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>flume on Eric&#39;s blog - A super concise theme for Hugo</title>
-    <link>http://localhost:1313/tags/flume/</link>
+    <link>http://blog.eric7.site/tags/flume/</link>
     <description>Recent content in flume on Eric&#39;s blog - A super concise theme for Hugo</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Fri, 16 Aug 2019 11:12:45 +0800</lastBuildDate>
     
-	<atom:link href="http://localhost:1313/tags/flume/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://blog.eric7.site/tags/flume/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>通过Thrift source向Flume发送数据的Python实现</title>
-      <link>http://localhost:1313/2019/08/16/%E9%80%9A%E8%BF%87thrift-source%E5%90%91flume%E5%8F%91%E9%80%81%E6%95%B0%E6%8D%AE%E7%9A%84python%E5%AE%9E%E7%8E%B0/</link>
+      <link>http://blog.eric7.site/2019/08/16/%E9%80%9A%E8%BF%87thrift-source%E5%90%91flume%E5%8F%91%E9%80%81%E6%95%B0%E6%8D%AE%E7%9A%84python%E5%AE%9E%E7%8E%B0/</link>
       <pubDate>Fri, 16 Aug 2019 11:12:45 +0800</pubDate>
       
-      <guid>http://localhost:1313/2019/08/16/%E9%80%9A%E8%BF%87thrift-source%E5%90%91flume%E5%8F%91%E9%80%81%E6%95%B0%E6%8D%AE%E7%9A%84python%E5%AE%9E%E7%8E%B0/</guid>
+      <guid>http://blog.eric7.site/2019/08/16/%E9%80%9A%E8%BF%87thrift-source%E5%90%91flume%E5%8F%91%E9%80%81%E6%95%B0%E6%8D%AE%E7%9A%84python%E5%AE%9E%E7%8E%B0/</guid>
       <description>前面说到，因为兼容之前的旧项目（使用的scribe收集日志，但facebook好像早就停止更新维护），现在的收集架构是scribe+flum</description>
     </item>
     
     <item>
       <title>Flume&#43;Kafka&#43;Flink&#43;Redis构建大数据实时处理系统（单机环境）--环境篇</title>
-      <link>http://localhost:1313/2019/08/15/flume-kafka-flink-redis%E6%9E%84%E5%BB%BA%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%AE%9E%E6%97%B6%E5%A4%84%E7%90%86%E7%B3%BB%E7%BB%9F%E5%8D%95%E6%9C%BA%E7%8E%AF%E5%A2%83-%E7%8E%AF%E5%A2%83%E7%AF%87/</link>
+      <link>http://blog.eric7.site/2019/08/15/flume-kafka-flink-redis%E6%9E%84%E5%BB%BA%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%AE%9E%E6%97%B6%E5%A4%84%E7%90%86%E7%B3%BB%E7%BB%9F%E5%8D%95%E6%9C%BA%E7%8E%AF%E5%A2%83-%E7%8E%AF%E5%A2%83%E7%AF%87/</link>
       <pubDate>Thu, 15 Aug 2019 16:23:13 +0800</pubDate>
       
-      <guid>http://localhost:1313/2019/08/15/flume-kafka-flink-redis%E6%9E%84%E5%BB%BA%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%AE%9E%E6%97%B6%E5%A4%84%E7%90%86%E7%B3%BB%E7%BB%9F%E5%8D%95%E6%9C%BA%E7%8E%AF%E5%A2%83-%E7%8E%AF%E5%A2%83%E7%AF%87/</guid>
+      <guid>http://blog.eric7.site/2019/08/15/flume-kafka-flink-redis%E6%9E%84%E5%BB%BA%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%AE%9E%E6%97%B6%E5%A4%84%E7%90%86%E7%B3%BB%E7%BB%9F%E5%8D%95%E6%9C%BA%E7%8E%AF%E5%A2%83-%E7%8E%AF%E5%A2%83%E7%AF%87/</guid>
       <description>大体流程： python readlog 读取本地日志文件发送到flume(本测试基于原有项目，原有项目是有scribe接收日志存到本地。正式项目flume直接读取本地</description>
     </item>
     
