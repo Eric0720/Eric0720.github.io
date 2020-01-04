@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>CDH6.3.1使用sentry权限管理 - Eric&#39;s blog - A super concise theme for Hugo</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Eric" /><meta name="description" content="环境：CDH6.3.1,Centos7.5 上一篇记录的是kerberos。是用来管理用户身份*即用户身份认证 Sentry，用户身份和权限的映" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.62.1 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/2020/01/02/cdh6-3-1%E5%BC%80%E5%90%AFsentry/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="CDH6.3.1使用sentry权限管理" />
+<meta property="og:description" content="环境：CDH6.3.1,Centos7.5 上一篇记录的是kerberos。是用来管理用户身份*即用户身份认证 Sentry，用户身份和权限的映" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/2020/01/02/cdh6-3-1%E5%BC%80%E5%90%AFsentry/" />
+<meta property="article:published_time" content="2020-01-02T21:33:20+08:00" />
+<meta property="article:modified_time" content="2020-01-02T21:33:20+08:00" />
+<meta itemprop="name" content="CDH6.3.1使用sentry权限管理">
+<meta itemprop="description" content="环境：CDH6.3.1,Centos7.5 上一篇记录的是kerberos。是用来管理用户身份*即用户身份认证 Sentry，用户身份和权限的映">
+<meta itemprop="datePublished" content="2020-01-02T21:33:20&#43;08:00" />
+<meta itemprop="dateModified" content="2020-01-02T21:33:20&#43;08:00" />
+<meta itemprop="wordCount" content="2000">
+
+
+
+<meta itemprop="keywords" content="CDH,sentry," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="CDH6.3.1使用sentry权限管理"/>
+<meta name="twitter:description" content="环境：CDH6.3.1,Centos7.5 上一篇记录的是kerberos。是用来管理用户身份*即用户身份认证 Sentry，用户身份和权限的映"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Eric&#39;s blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Eric&#39;s blog</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">CDH6.3.1使用sentry权限管理</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-01-02 </span>
+        
+          <span class="more-meta"> 2000 words </span>
+          <span class="more-meta"> 4 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#a-namefenced-code-blockcmsentrya">一.CM添加Sentry服务及配置</a></li>
+    <li><a href="#a-namefenced-code-blocka">二.权限测试及验证</a></li>
+    <li><a href="#a-namefenced-code-blocka-1">三.问题与总结：</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p>环境：CDH6.3.1,Centos7.5</p>
+</blockquote>
+<p><img src="http://sentry.apache.org/images/sentry.png" alt="photo"></p>
+<p>上一篇记录的是kerberos。是用来管理用户身份*即用户身份认证</p>
+<pre><code>Sentry，用户身份和权限的映射关系管理 即授权。
+CDH的介绍是：Sentry 服务存储身份验证政策元数据并为客户端提供对该元数据的并发安全访问。
+</code></pre>
+<!-- raw HTML omitted -->
+<p>我理解的kerberos+sentry = 用户验证+权限管理。搭配组合使用来做多租户的权限分配。
+可以管理用户读那些hive表，和那些hdfs路径下的文件。</p>
+<h2 id="a-namefenced-code-blockcmsentrya"><!-- raw HTML omitted -->一.CM添加Sentry服务及配置<!-- raw HTML omitted --></h2>
+<p><strong>1.在CM中添加服务。Sentry</strong>
+<img src="/img/sentry1.png" alt="sentry"></p>
+<ul>
+<li>
+<p>给服务器分配sentry角色
+<img src="/img/sentry2.png" alt="sentry"></p>
+</li>
+<li>
+<p>需要生成一个sentry的数据库,我这里sentry数据库和其他服务放在了一起都在h1上，数据库名字自定义，我这里数据库和用户都叫sentry
+<img src="/img/sentry3.png" alt="sentry"></p>
+</li>
+</ul>
+<p>下面两步没有截图。略过了。</p>
+<p><strong>2.添加好sentry服务下面开始设置sentry：</strong></p>
+<p>Hive的设置，将图中两项勾选去掉
+<img src="/img/sentry4.png" alt="sentry"></p>
+<p>第二步 将Hive服务的Sentry勾上，默认是none
+<img src="/img/sentry5.png" alt="sentry"></p>
+<p>然后重启hive的过时配置即可。</p>
+<p><strong>3.设置hdfs的控制列表和sentry同步</strong></p>
+<p>紧接着，开启HDFS角色的acl（这里主要控制用户访问的HDFS目录，因为在生产环境中会指定一些目录是该用户可以访问的，而其他一些目录该用户访问不了）</p>
+<p>以下两项勾选。
+<img src="/img/sentry6.png" alt="sentry"></p>
+<p>然后重启hdfs的过期配置，并勾选重新部署客户端配置</p>
+<p><strong>4.接下来。生成hive.keytab</strong></p>
+<p>在KDC服务器上执行以下命令，将集群的所有机器的keytab汇总到一个文件中：</p>
+<p>首先在Kerberos数据库中创建principal:<code>kadmin.local -q &quot;addprinc -randkey hive/h$i.cat.com@CAT.COM&quot;</code></p>
+<p>批量生成命令：<code>for i in {1..4}; do sudo kadmin.local -q &quot;addprinc -randkey hive/h$i.cat.com@CAT.COM &quot;;done</code></p>
+<p>然后，在当前目录下生成hive.keytab文件:<code>kadmin.local -q &quot;xst -norandkey -k hive.keytab hive/h$i.cat.com@CAT.COM&quot;</code></p>
+<p>批量生成命令:<code>for i in {1..4};do sudo kadmin.local -q &quot;xst -norandkey -k hive.keytab hive/h$i.cat.com@CAT.COM&quot;;done</code></p>
+<p>然后在集群中一个节点修改<code>/etc/hive/conf/hive-site.conf</code></p>
+<p>添加以下内容。指定keytab的路径</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">  &lt;property&gt;
+  &lt;name&gt;hive.metastore.kerberos.keytab.file&lt;/name&gt;
+  &lt;value&gt;/etc/hive/conf/hive.keytab&lt;/value&gt;
+  &lt;/property&gt;
+</code></pre></td></tr></table>
+</div>
+</div><p>将修改后的hive-site.conf发送到集群中的其他机器的<code>/etc/hive/conf</code>目录下（h1,h2,h3,h4）</p>
+<p><code>for i in {1..4};do scp  hive-site.conf h$i:/etc/hive/conf;done</code></p>
+<p>将上面生成的keytab发给集群的其他所有服务器（h1,h2,h3,h4）</p>
+<p><code>for i in {1..4};do  scp  hive.keytab h$i:/etc/hive/conf;done</code></p>
+<p>然后修改keytab的权限。</p>
+<p><code>for i in {1..4}; do ssh h$i &quot;cd /etc/hive/conf; chmod 400 hive.keytab; chown hive:hadoop hive.keytab&quot;; done</code></p>
+<ul>
+<li>注：由于 keytab 相当于有了永久凭证，不需要提供密码(如果修改 kdc 中的 principal 的密码，则该 keytab 就会失效)，所以其他用户如果对该文件有读权限，就可以冒充 keytab 中指定的用户身份访问 hadoop，所以 keytab 文件需要确保只对 owner 有读权限(0400)</li>
+</ul>
+<h2 id="a-namefenced-code-blocka"><!-- raw HTML omitted -->二.权限测试及验证<!-- raw HTML omitted --></h2>
+<p>创建系统用户,user1,user2,上一篇说过，建立账户要给所有的机器都创建。考虑到用户的任务分发问题,会报错。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">[root@h1 ~]# useradd user1
+[root@h1 ~]# useradd user2
+[root@h2 ~]# useradd user1
+[root@h2 ~]# useradd user2
+[root@h3 ~]# useradd user1
+[root@h3 ~]# useradd user2
+[root@h4 ~]# useradd user1
+[root@h4 ~]# useradd user2
+</code></pre></td></tr></table>
+</div>
+</div><p>在KDC上创建Kerberos用户</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">sudo kadmin.local -q &#34;addprinc user1&#34;sudo kadmin.local -q &#34;addprinc user2&#34;
+</code></pre></td></tr></table>
+</div>
+</div><p>使用keytab 登陆kerberos hive用户</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">[root@h1 ~]#kinit -kt hive.keytab hive/h1.cat.com
+[root@h1 ~]#hive
+
+</code></pre></td></tr></table>
+</div>
+</div><p>创建测试数据库</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">create database db1;create database db2;
+
+</code></pre></td></tr></table>
+</div>
+</div><p>在数据库中创建表
+在db1中创建table1，在db2中创建table1和table2</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">create table db1.table1 (
+name STRING, age STRING
+) ROW FORMAT DELIMITED FIELDS TERMINATED BY &#39;,&#39;;
+create table db2.table1 (
+name STRING, age STRING
+) ROW FORMAT DELIMITED FIELDS TERMINATED BY &#39;,&#39;;
+create table db2.table2 (
+name STRING, age STRING
+) ROW FORMAT DELIMITED FIELDS TERMINATED BY &#39;,&#39;;
+
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">cat test.csv 
+leo,19
+lilei,23
+jack,25
+tony,28
+eric,18
+lucy,16
+
+</code></pre></td></tr></table>
+</div>
+</div><p>导入数据</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">load data local inpath &#39;/home/user1/test.csv&#39; overwrite into table db1.table1;
+load data local inpath &#39;/home/user1/test.csv&#39; overwrite into table db2.table1;
+load data local inpath &#39;/home/user1/test.csv&#39; overwrite into table db2.table2;
+
+</code></pre></td></tr></table>
+</div>
+</div><p>用户授权。给user1，user2授权数据库权限</p>
+<p>使用Hive client授权报错。
+上面已经用kinit -kt hive.keytab hive/h1.cat.com 切换为hive用户了，hive还是没有权限操作。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">hive&gt; create role user1_role;
+FAILED: Execution Error, return code 1 from org.apache.hadoop.hive.ql.exec.DDLTask. Current user : hive is not allowed to add roles. User has to belong to ADMIN role and have it as current role, for this action.
+hive&gt; GRANT ALL ON DATABASE db1 TO ROLE user1_role;
+FAILED: Execution Error, return code 1 from org.apache.hadoop.hive.ql.exec.DDLTask. Permission denied: Principal [name=hive, type=USER] does not have following privileges for operation GRANT_PRIVILEGE [[SELECT with grant, INSERT with grant, UPDATE with grant, DELETE with grant] on Object [type=DATABASE, name=db1]]
+hive&gt; GRANT ROLE user1_role TO GROUP user1;
+FAILED: Execution Error, return code 1 from org.apache.hadoop.hive.ql.exec.DDLTask. Invalid principal type in principal Principal [name=user1, type=GROUP]
+</code></pre></td></tr></table>
+</div>
+</div><p>hive没有权限做授权，看网上资料用的是beeline,然后成功。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">
+create role user1_role;GRANT ALL ON DATABASE db1 TO ROLE user1_role;GRANT ROLE user1_role TO GROUP user1;
+
+create role user2_role;GRANT ALL ON DATABASE db2 TO ROLE user2_role;GRANT ROLE user2_role TO GROUP user2;
+
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="/img/sentry7.png" alt="sentry"></p>
+<p>验证User1只有db1和default的权限（default是默认的自带库）
+<img src="/img/sentry8.png" alt="sentry"></p>
+<p>User2只有db2和default的权限
+<img src="/img/sentry9.png" alt="sentry"></p>
+<p>然后验证hdfs 权限
+User1只能查看db1.db表下面的数据文件
+<img src="/img/sentry10.png" alt="sentry"></p>
+<p>同理use2只能查看db2.db下面的数据。
+<img src="/img/sentry11.png" alt="sentry"></p>
+<h2 id="a-namefenced-code-blocka-1"><!-- raw HTML omitted -->三.问题与总结：<!-- raw HTML omitted --></h2>
+<p>1.当使用hive cli的时候，会显示所有表，而beeline只会显示有权限的表,但hive显示没有权限的表当查询的时候也会报没有权限的错误。</p>
+<p>例如。User2用户使用user1的db1。会报以下错误。没有权限读取元数据的hdfs目录数据</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">
+FAILED: SemanticException Unable to determine if hdfs://h1.cat.com:8020/user/hive/warehouse/db1.db/table1 
+is encrypted: org.apache.hadoop.security.AccessControlException: Permission denied: user=user2, access=READ, 
+inode=&#34;/user/hive/warehouse/db1.db/table1&#34;:hive:hive:drwxrwx--
+
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="/img/sentry12.png" alt="sentry"></p>
+<p>2.这里用keytab登陆hive报错。
+hive&gt; [root@h1 ckinit -kt hive.keytab hive/h1.cat.com                                      <br>
+kinit: Password incorrect while getting initial credentials</p>
+<ul>
+<li>注意。修改配置，和重启服务会提示keytab失效，报以下错误，需要生成，然后分发即可。</li>
+</ul>
+<p>3.连接beeline命令
+!connect jdbc:hive2://localhost:10000/;principal=hive/h1@CAT.COM</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">Eric</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2020-01-02
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/cdh/">CDH</a>
+          <a href="/tags/sentry/">sentry</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/2020/01/04/test/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Hugo Test</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/2019/12/30/cdh6-3-1%E5%BC%80%E5%90%AFkerberos/">
+            <span class="next-text nav-default">CDH6.3.1开启kerberos</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2018 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Eric</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

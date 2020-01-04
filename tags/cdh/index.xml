@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>CDH on Eric&#39;s blog - A super concise theme for Hugo</title>
+    <link>http://localhost:1313/tags/cdh/</link>
+    <description>Recent content in CDH on Eric&#39;s blog - A super concise theme for Hugo</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 02 Jan 2020 21:33:20 +0800</lastBuildDate>
+    
+	<atom:link href="http://localhost:1313/tags/cdh/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>CDH6.3.1使用sentry权限管理</title>
+      <link>http://localhost:1313/2020/01/02/cdh6-3-1%E5%BC%80%E5%90%AFsentry/</link>
+      <pubDate>Thu, 02 Jan 2020 21:33:20 +0800</pubDate>
+      
+      <guid>http://localhost:1313/2020/01/02/cdh6-3-1%E5%BC%80%E5%90%AFsentry/</guid>
+      <description>环境：CDH6.3.1,Centos7.5 上一篇记录的是kerberos。是用来管理用户身份*即用户身份认证 Sentry，用户身份和权限的映</description>
+    </item>
+    
+    <item>
+      <title>CDH6.3.1开启kerberos</title>
+      <link>http://localhost:1313/2019/12/30/cdh6-3-1%E5%BC%80%E5%90%AFkerberos/</link>
+      <pubDate>Mon, 30 Dec 2019 23:12:45 +0800</pubDate>
+      
+      <guid>http://localhost:1313/2019/12/30/cdh6-3-1%E5%BC%80%E5%90%AFkerberos/</guid>
+      <description>环境： 基于centos 7.5,CDH 6.3.1 一.安装kerberos kerberso是什么 之前没有接触过kerberos，最近项目需要基于CDH的多租户管理，</description>
+    </item>
+    
+    <item>
+      <title>Centos7.5离线搭建CDH6.3</title>
+      <link>http://localhost:1313/2019/10/15/centos7-5%E7%A6%BB%E7%BA%BF%E6%90%AD%E5%BB%BAcdh6-3/</link>
+      <pubDate>Tue, 15 Oct 2019 18:40:28 +0800</pubDate>
+      
+      <guid>http://localhost:1313/2019/10/15/centos7-5%E7%A6%BB%E7%BA%BF%E6%90%AD%E5%BB%BAcdh6-3/</guid>
+      <description>环境: centos 7.5,CDH 6.3 本文是在Centos7.5下完全离线部署CDH6 公司的CDH为5.X版本,CDH5和CDH6的差异还是有些的。之前搭建过CDH5</description>
+    </item>
+    
+  </channel>
+</rss>

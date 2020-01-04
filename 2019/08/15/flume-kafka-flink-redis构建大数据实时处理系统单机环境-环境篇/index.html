@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Flume&#43;Kafka&#43;Flink&#43;Redis构建大数据实时处理系统（单机环境）--环境篇 - Eric&#39;s blog - A super concise theme for Hugo</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Eric" /><meta name="description" content="大体流程： python readlog 读取本地日志文件发送到flume(本测试基于原有项目，原有项目是有scribe接收日志存到本地。正式项目flume直接读取本地" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.62.1 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/2019/08/15/flume-kafka-flink-redis%E6%9E%84%E5%BB%BA%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%AE%9E%E6%97%B6%E5%A4%84%E7%90%86%E7%B3%BB%E7%BB%9F%E5%8D%95%E6%9C%BA%E7%8E%AF%E5%A2%83-%E7%8E%AF%E5%A2%83%E7%AF%87/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Flume&#43;Kafka&#43;Flink&#43;Redis构建大数据实时处理系统（单机环境）--环境篇" />
+<meta property="og:description" content="大体流程： python readlog 读取本地日志文件发送到flume(本测试基于原有项目，原有项目是有scribe接收日志存到本地。正式项目flume直接读取本地" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/2019/08/15/flume-kafka-flink-redis%E6%9E%84%E5%BB%BA%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%AE%9E%E6%97%B6%E5%A4%84%E7%90%86%E7%B3%BB%E7%BB%9F%E5%8D%95%E6%9C%BA%E7%8E%AF%E5%A2%83-%E7%8E%AF%E5%A2%83%E7%AF%87/" />
+<meta property="article:published_time" content="2019-08-15T16:23:13+08:00" />
+<meta property="article:modified_time" content="2019-08-15T16:23:13+08:00" />
+<meta itemprop="name" content="Flume&#43;Kafka&#43;Flink&#43;Redis构建大数据实时处理系统（单机环境）--环境篇">
+<meta itemprop="description" content="大体流程： python readlog 读取本地日志文件发送到flume(本测试基于原有项目，原有项目是有scribe接收日志存到本地。正式项目flume直接读取本地">
+<meta itemprop="datePublished" content="2019-08-15T16:23:13&#43;08:00" />
+<meta itemprop="dateModified" content="2019-08-15T16:23:13&#43;08:00" />
+<meta itemprop="wordCount" content="3087">
+
+
+
+<meta itemprop="keywords" content="flume,flink,kafka," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Flume&#43;Kafka&#43;Flink&#43;Redis构建大数据实时处理系统（单机环境）--环境篇"/>
+<meta name="twitter:description" content="大体流程： python readlog 读取本地日志文件发送到flume(本测试基于原有项目，原有项目是有scribe接收日志存到本地。正式项目flume直接读取本地"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Eric&#39;s blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Eric&#39;s blog</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Flume&#43;Kafka&#43;Flink&#43;Redis构建大数据实时处理系统（单机环境）--环境篇</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-08-15 </span>
+        
+          <span class="more-meta"> 3087 words </span>
+          <span class="more-meta"> 7 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#a-namefenced-code-block1javaa">1.安装java环境</a></li>
+    <li><a href="#a-namefenced-code-block2scalaa">2.安装scala</a></li>
+    <li><a href="#a-namefenced-code-block3zookeepera">3.安装zookeeper</a></li>
+    <li><a href="#a-namefenced-code-block4kafkaa">4.安装kafka</a></li>
+    <li><a href="#a-namefenced-code-block5flumea">5.flume安装</a></li>
+    <li><a href="#a-namefenced-code-block-6flink-a"> 6.flink安装 </a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1565806172964&amp;di=fcca31256b007193f7eab4ab980bc407&amp;imgtype=0&amp;src=http%3A%2F%2Fwww.variflight.com%2F_newstatic%2Fdest%2Fimg%2Fenglish%2Findex%2Fvideo_bg.jpg" alt="Photo"></p>
+<p><strong>大体流程：</strong></p>
+<ul>
+<li>
+<p>python readlog 读取本地日志文件发送到flume(本测试基于原有项目，原有项目是有scribe接收日志存到本地。正式项目flume直接读取本地文件 source改为直接监控日志文件 a1.sources.r1.type = exec, a1.sources.r1.command = tail -F /var/log/secure)</p>
+</li>
+<li>
+<p>flume sink 数据到kafka</p>
+</li>
+<li>
+<p>flink  scala消费kafka</p>
+</li>
+<li>
+<p>存入到redis</p>
+</li>
+<li>
+<p>django展示</p>
+</li>
+</ul>
+<!-- raw HTML omitted -->
+<blockquote>
+<p>这里原应有一个流程图，但是不知道为何markdown不支持flow流程图</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">graph LR
+A[scribe] --&gt; B[disk] 
+A --&gt; C(hdfs)
+B --&gt; D[python ThriftFlumeEvent发送到flume]
+D --&gt; F[Flume]
+F --sink--&gt; G[kafka]
+G--scala--&gt; H[flink]
+
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>本机系统：</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Ubuntu 16.04
+conda环境下的python 3.7
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>需要安装的环境：</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">jdk1.8.0_202，scala 2.11.6 ，zookeeper-3.4.5，kafka_2.11-2.3.0，flume-1.8.0，flink-1.8.0
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="a-namefenced-code-block1javaa"><!-- raw HTML omitted -->1.安装java环境<!-- raw HTML omitted --></h2>
+<ul>
+<li>这里安装1.8</li>
+</ul>
+<blockquote>
+<p>环境存放到 cd /opt/</p>
+</blockquote>
+<ul>
+<li>
+<p>下载 wget <a href="https://repo.huaweicloud.com/java/jdk/8u202-b08/jdk-8u202-linux-x64.tar.gz">https://repo.huaweicloud.com/java/jdk/8u202-b08/jdk-8u202-linux-x64.tar.gz</a></p>
+<p>(这里是用华为的镜像地址下载，oracle需要登陆账号)</p>
+</li>
+<li>
+<p>解压到指定目录 tar -zxvf jdk-8u202-linux-x64.tar.gz</p>
+</li>
+<li>
+<p>vim ~/.bashrc  添加环境变量如下</p>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">export JAVA_HOME=/opt/jdk1.8.0_202  ## 这里要注意目录要换成自己解压的jdk 目录
+export JRE_HOME=${JAVA_HOME}/jre
+export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib
+export PATH=${JAVA_HOME}/bin:$PATH
+</code></pre></td></tr></table>
+</div>
+</div><p>立即生效
+source ~/.bashr</p>
+<p>验证 java -version</p>
+<h2 id="a-namefenced-code-block2scalaa"><!-- raw HTML omitted -->2.安装scala<!-- raw HTML omitted --></h2>
+<ul>
+<li>
+<p>这里安装2.11版本</p>
+</li>
+<li>
+<p>spark和scala版本对应关系: spark1.6.2&ndash;scala2.10 spark2.0.0&ndash;scala2.11
+本机还要安装spark2.0所以这里安装的是2.11.6</p>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">wget https://downloads.lightbend.com/scala/2.11.6/scala-2.11.6.tgz
+
+tar -zxvf scala-2.11.6.tgz -C /opt/scala-2.11.6
+
+vim ~/.bashrc
+
+source ~/.bashrc
+
+添加环境变量如下
+export SCALA_HOME=/opt/scala-2.11.6
+export PATH=$PATH:${SCALA_HOME}/bin
+
+验证 scala -version
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="a-namefenced-code-block3zookeepera"><!-- raw HTML omitted -->3.安装zookeeper<!-- raw HTML omitted --></h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">下载 wget http://archive.apache.org/dist/zookeeper/zookeeper-3.4.5/zookeeper-3.4.5.tar.gz
+
+解压 tar -zxvf zookeeper-3.4.5.tar.gz -C /opt/zookeeper-3.4.5
+
+进入解压目录  cd /opt/zookeeper-3.4.5/conf/
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p>拷贝配置文件 cp zoo_sample.cfg  zoo.cfg</p>
+</li>
+<li>
+<p>vim zoo.cfg 添加如下内容</p>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">修改zookeeper数据存放地址，dataDir,dataLogDir
+
+dataDir=/data/zookeeper/data
+dataLogDir=/data/zookeeper/log
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>新建添加的zk数据目录</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">mkdir /data/zookeeper/data
+mkdir /data/zookeeper/log
+在/data/zookeeper/data 目录新建一个myid文件，内容为1，代表服务器的编号是1
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>vim /etc/profile    添加环境变量</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">export ZOOKEEPER_HOME=/opt/zookeeper-3.4.5
+export PATH=.:$ZOOKEEPER_HOME/bin:$JAVA_HOME/bin:$PATH
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p>source /etc/profile 立即生效</p>
+</li>
+<li>
+<p>进入zk解压目录 <code>cd /opt/zookeeper-3.4.5</code></p>
+</li>
+<li>
+<p>启动  <code>bin/zkServer.sh  start</code>  此命令会在当前目录创建日志文件</p>
+</li>
+</ul>
+<blockquote>
+<p>输出以下代表已启动正常，如有错误查看当前目录日志 zookeeper.out</p>
+</blockquote>
+<blockquote>
+<p>JMX enabled by default
+Using config: /opt/zookeeper-3.4.5/bin/../conf/zoo.cfg
+Starting zookeeper &hellip; STARTED</p>
+</blockquote>
+<p>查看启动状态：</p>
+<ul>
+<li><code>bin/zkServer.sh status</code></li>
+</ul>
+<p>输出：</p>
+<blockquote>
+<p>JMX enabled by default
+Using config: /opt/zookeeper-3.4.5/bin/../conf/zoo.cfg
+Mode: standalone</p>
+</blockquote>
+<h2 id="a-namefenced-code-block4kafkaa"><!-- raw HTML omitted -->4.安装kafka<!-- raw HTML omitted --></h2>
+<p><img src="https://kafka.apache.org/images/kafka_diagram.png" alt="kafka"></p>
+<ul>
+<li>
+<p>这里安装 2.3.0</p>
+</li>
+<li>
+<p>kafka_2.11-2.3.0  2.11为scala版本，kafka版本为2.3.0</p>
+</li>
+<li>
+<p>下载 <code>wget https://www.apache.org/dyn/closer.cgi?path=/kafka/2.3.0/kafka_2.11-2.3.0.tgz</code></p>
+</li>
+<li>
+<p>解压 <code>tar -zxvf kafka_2.11-2.3.0.tgz -C /opt/kafka_2.11-2.3.0</code></p>
+</li>
+<li>
+<p>添加环境变量</p>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">vi ~/.bash_profile
+
+export KAFKA_HOME=/opt/kafka_2.11-2.3.0
+
+export PATH=$KAFKA_HOME/bin:$PATH
+</code></pre></td></tr></table>
+</div>
+</div><p>立即生效 <code>source ~/.bash_profile</code></p>
+<ul>
+<li>kafka需要使用Zookeeper,所以需要启动Zookeeper服务,上面的操作就已经启动了Zookeeper服务
+如果没有的话,可以使用kafka自带的脚本启动一个简单的单一节点Zookeeper实例</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">cd /opt/kafka_2.11-2.3.0/
+bin/zookeeper-server-start.sh config/zookeeper.properties
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>现在启动kafka(前台执行，会打印日志)  <code>bin/kafka-server-start.sh config/server.properties</code></li>
+</ul>
+<p>后台执行</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">//配置了环境变量,1代表标准输出,2代表错误输出,把2重定向到标准输出1需要使用&amp;,最后的&amp;表示后台运行
+nohup bin/kafka-server-start.sh config/server.properties &gt; kafka_start.log 2&gt;&amp;1 &amp; 
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p>创建一个主题,只使用单个分区一个复本
+<code>bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test</code></p>
+</li>
+<li>
+<p>启动生产者发送消息</p>
+</li>
+</ul>
+<p><code>bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test</code></p>
+<blockquote>
+<p>Hello Kafka</p>
+</blockquote>
+<p>另开终端启动消费者进行消费信息</p>
+<p><code>bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test</code></p>
+<p>消费者成功打印出</p>
+<blockquote>
+<p>Hello Kafka</p>
+</blockquote>
+<p>kafka相关命令</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">//启动kafka
+bin/kafka-server-start.sh config/server.properties 
+//停止kafka
+bin/kafka-server-stop.sh
+//创建topic,--replication-factor指定副本个数,--partitions指定分区个数
+bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
+//查看所有的topic信息
+bin/kafka-topics.sh --list --zookeeper localhost:2181
+//启动生产者
+bin/kafka-console-producer.sh --broker-list your.host.name:9092 --topic test
+//启动消费者
+bin/kafka-console-consumer.sh --bootstrap-server your.host.name:9092 --topic test --from-beginning
+//删除topic
+bin/kafka-topics.sh --delete --zookeeper localhost:2181 --topic test
+</code></pre></td></tr></table>
+</div>
+</div><p>如果后期开发的话需要对kafka配置进行修改 server.properties</p>
+<p>其他参数没有深究，其他配置可以参考官网说明</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">//用于区分broker,必须唯一
+broker.id=0
+
+//代理将向生产者和消费者宣传的主机名和端口。 如果没有设定，它将使用“listeners”的值。否则，它从java.net.InetAddress.getCanonicalHostName获得。
+advertised.listeners=PLAINTEXT://外网ip:9092
+
+//配置zookeeper的地址,zookeeper集群地址以逗号隔开
+zookeeper.connect=localhost:2181
+
+//配置数据存放目录
+log.dirs=/data/kafka2.3
+</code></pre></td></tr></table>
+</div>
+</div><p>advertised.listeners是个坑，这里说明下，也是让自己长点记性</p>
+<p>官方解释：</p>
+<blockquote>
+<p>Listeners to publish to ZooKeeper for clients to use, if different than the listeners above.
+In IaaS environments, this may need to be different from the interface to which the broker binds.
+If this is not set, the value for listeners will be used.</p>
+</blockquote>
+<p>下面是默认配置，没有修改：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">#listeners=PLAINTEXT://:9092
+#advertised.listeners=PLAINTEXT://your.host.name:9092
+zookeeper.connect=localhost:2181
+</code></pre></td></tr></table>
+</div>
+</div><p>注释的两个参数，虽然注释了，但是通过介绍可以知道，这两个参数，可以通过java.net.InetAddress.getCanonicalHostName获得，也就是可以获取到127.0.0.1  这样的话，本机测试是可以正常消费和生产数据的，但外网不行。</p>
+<p>经各种测试后发现，修改kafka的advertised.listeners 为外网ip 即可：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">#listeners=PLAINTEXT://:9092
+advertised.listeners=PLAINTEXT://外网ip:9092
+zookeeper.connect=localhost:2181
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="a-namefenced-code-block5flumea"><!-- raw HTML omitted -->5.flume安装<!-- raw HTML omitted --></h2>
+<ul>
+<li>Flume
+<img src="https://flume.apache.org/_images/DevGuide_image00.png" alt="photo"></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">wget http://archive.apache.org/dist/flume/1.8.0/apache-flume-1.8.0-bin.tar.gz
+tar -zxvf apache-flume-1.8.0-bin.tar.gz
+重命名 mv apache-flume-1.8.0-bin flume-1.8.0
+</code></pre></td></tr></table>
+</div>
+</div><p>添加环境变量</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">vi ~/.bash_profile
+export FLUME_HOME=/opt/flume-1.8.0
+export PATH=$PATH:$FLUME_HOME/bin
+</code></pre></td></tr></table>
+</div>
+</div><p>立即生效 <code>source ~/.bash_profile</code></p>
+<p>进入解压目录修改配置<code>cd /opt/flume-1.8.0/conf/</code>
+<code>mv flume-env.sh.template flume-env.sh</code></p>
+<p><code>vim flume-env.sh</code> 去掉注释，配置正确的java路径
+<code>export JAVA_HOME=/opt/jdk1.8.0_202</code></p>
+<p>验证 <code>flume-ng version</code> 输出：</p>
+<blockquote>
+<p>Flume 1.8.0
+Source code repository: <a href="https://git-wip-us.apache.org/repos/asf/flume.git">https://git-wip-us.apache.org/repos/asf/flume.git</a>
+Revision: 99f591994468633fc6f8701c5fc53e0214b6da4f
+Compiled by denes on Fri Sep 15 14:58:00 CEST 2017
+From source with checksum fbb44c8c8fb63a49be0a59e27316833d</p>
+</blockquote>
+<p>拷贝并修改配置<code>cp flume-conf.properties.template   flume-conf.properties</code></p>
+<p>使用官方配置,官方配置使用netcat源，更多源查看官方网站<a href="%5Bhttps://flume.apache.org/releases/content/1.9.0/FlumeUserGuide.html#spooling-directory-source%5D(https://flume.apache.org/releases/content/1.9.0/FlumeUserGuide.html#spooling-directory-source)">https://flume.apache.org/releases/content/1.9.0/FlumeUserGuide.html#spooling-directory-source</a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">#example.conf: A single-node Flume configuration
+
+#Name the components on this agent
+a1.sources = r1
+a1.sinks = k1
+a1.channels = c1
+
+#Describe/configure the source
+a1.sources.r1.type = netcat
+a1.sources.r1.bind = localhost
+a1.sources.r1.port = 44444
+
+#Describe the sink
+#打印内容到日志中
+a1.sinks.k1.type = logger
+
+#Use a channel which buffers events in memory
+a1.channels.c1.type = memory
+a1.channels.c1.capacity = 1000
+a1.channels.c1.transactionCapacity = 100
+
+#Bind the source and sink to the channel
+a1.sources.r1.channels = c1
+a1.sinks.k1.channel = c1
+
+</code></pre></td></tr></table>
+</div>
+</div><p>启动验证
+<code>bin/flume-ng agent --conf conf --conf-file conf/flume-conf.properties --name a1 -Dflume.root.logger=INFO,console</code></p>
+<p>另起窗口输入,然后输入内容，前面的终端会输出内容，测试成功。</p>
+<blockquote>
+<p>telnet localhost 44444</p>
+</blockquote>
+<ul>
+<li>这里要使用,Thrift源。因为项目中原本要兼容flume+scribe，新建配置 flume-thrift.properties,接收python发送过来的日志</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">tier1.sources  = source1
+tier1.channels = channel1
+tier1.sinks    = sink1
+
+tier1.sources.source1.channels = channel1
+tier1.channels.channel1.type   = memory
+tier1.sources.source1.type = thrift
+tier1.sources.source1.bind = 0.0.0.0
+tier1.sources.source1.port = 4444
+
+tier1.sources.source1.selector.type = multiplexing
+tier1.sources.source1.selector.header = GAMENAME
+tier1.sources.source1.selector.mapping.FSZHS = channel1
+
+#配置sink下沉到kafka，kafka来消费数据
+tier1.sinks.sink1.type = org.apache.flume.sink.kafka.KafkaSink
+tier1.sinks.sink1.brokerList = localhost:9092
+tier1.sinks.sink1.topic = test
+tier1.sinks.sink1.serializer.class = kafka.serializer.StringEncoder
+tier1.sinks.sink1.channel = channel1
+
+
+tier1.channels.channel1.capacity = 5000
+tier1.channels.channel1.transactionCapacity = 2000
+
+#日志中打印出内容
+#tier1.sinks.sink1.type = logger
+#tier1.sinks.sink1.channel = channel1
+
+</code></pre></td></tr></table>
+</div>
+</div><p>关于selector参数的说明：</p>
+<p>它的type 有** Multiplexing **,** Replicating** , 这里是用selector来根据header的GAMENAME内容分发到对应的channel，暂时不做存储。（项目需要本地，hdfs分别一份，每个项目需要两个channel）</p>
+<p>区别是：Replicating 会将source过来的events发往所有channel,而Multiplexing 可以选择该发往哪些channel</p>
+<p>之前没有设置会出现<code>Thrift source %s could not append events to the channel.</code></p>
+<p>查阅资料,这和memory channel的另一个参数有关：</p>
+<p>transactionCapacity，（The maximum number of events the channel will take from a source or give to a sink per transaction）表明source给channel、channel给sink一次发送的event个数，如果不设置，默认值为100。所以当我设置batchsize为100时，可以正确发送，但是超过100，就发送失败。</p>
+<p>关于参数** transactionCapacity ** 和** capacity ** :</p>
+<blockquote>
+<p>a1.sinks.k1.hdfs.batchSize 官方解释:
+##number of events written to file before it is flushed to HDFS<br>
+a1.channels.c1.capacity  官方解释 :<br>
+#The maximum number of events stored in the channel
+a1.channels.c1.transactionCapacity 官方解释 :<br>
+#The maximum number of events the channel will take from a source or give to a sink per transaction</p>
+</blockquote>
+<p>这三者之间的关系:</p>
+<p>batchsize &lt;=transactionCapacity&lt;=capacity</p>
+<h2 id="a-namefenced-code-block-6flink-a"><!-- raw HTML omitted --> 6.flink安装 <!-- raw HTML omitted --></h2>
+<p><img src="https://flink.apache.org/img/flink-home-graphic.png" alt="flink"></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">wget https://archive.apache.org/dist/flink/flink-1.8.0/flink-1.8.0-bin-scala_2.11.tgz
+
+解压 tar -zxvf apache-flume-1.8.0-bin.tar.gz
+</code></pre></td></tr></table>
+</div>
+</div><p>启动flink <code>bin/start-cluster.sh</code></p>
+<p>查看web <a href="http://localhost:8081">http://localhost:8081</a></p>
+<ul>
+<li>测试   nc -l 9000 输入</li>
+</ul>
+<blockquote>
+<p>hello flink</p>
+</blockquote>
+<p>启动官方demo
+<code>./bin/flink run examples/streaming/SocketWindowWordCount.jar --port 9000</code></p>
+<p>查看日志log目录下</p>
+<p><code>tail -f flink-root-taskexecutor-0-xxxxxxxxx.out </code></p>
+<p>输出：</p>
+<blockquote>
+<p>(hello,1)
+(flink,1)</p>
+</blockquote>
+<p>至此环境搭建完成。</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">Eric</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2019-08-15
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/flume/">flume</a>
+          <a href="/tags/flink/">flink</a>
+          <a href="/tags/kafka/">kafka</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/2019/08/16/%E9%80%9A%E8%BF%87thrift-source%E5%90%91flume%E5%8F%91%E9%80%81%E6%95%B0%E6%8D%AE%E7%9A%84python%E5%AE%9E%E7%8E%B0/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">通过Thrift source向Flume发送数据的Python实现</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/2019/05/10/%E4%BB%8A%E6%97%A5%E6%9B%B4%E6%96%B0-1/">
+            <span class="next-text nav-default">今日更新</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2018 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Eric</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

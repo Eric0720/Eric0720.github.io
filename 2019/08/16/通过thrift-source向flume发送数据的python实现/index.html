@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>通过Thrift source向Flume发送数据的Python实现 - Eric&#39;s blog - A super concise theme for Hugo</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Eric" /><meta name="description" content="前面说到，因为兼容之前的旧项目（使用的scribe收集日志，但facebook好像早就停止更新维护），现在的收集架构是scribe&#43;flum" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.62.1 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/2019/08/16/%E9%80%9A%E8%BF%87thrift-source%E5%90%91flume%E5%8F%91%E9%80%81%E6%95%B0%E6%8D%AE%E7%9A%84python%E5%AE%9E%E7%8E%B0/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="通过Thrift source向Flume发送数据的Python实现" />
+<meta property="og:description" content="前面说到，因为兼容之前的旧项目（使用的scribe收集日志，但facebook好像早就停止更新维护），现在的收集架构是scribe&#43;flum" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/2019/08/16/%E9%80%9A%E8%BF%87thrift-source%E5%90%91flume%E5%8F%91%E9%80%81%E6%95%B0%E6%8D%AE%E7%9A%84python%E5%AE%9E%E7%8E%B0/" />
+<meta property="article:published_time" content="2019-08-16T11:12:45+08:00" />
+<meta property="article:modified_time" content="2019-08-16T11:12:45+08:00" />
+<meta itemprop="name" content="通过Thrift source向Flume发送数据的Python实现">
+<meta itemprop="description" content="前面说到，因为兼容之前的旧项目（使用的scribe收集日志，但facebook好像早就停止更新维护），现在的收集架构是scribe&#43;flum">
+<meta itemprop="datePublished" content="2019-08-16T11:12:45&#43;08:00" />
+<meta itemprop="dateModified" content="2019-08-16T11:12:45&#43;08:00" />
+<meta itemprop="wordCount" content="1513">
+
+
+
+<meta itemprop="keywords" content="flume," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="通过Thrift source向Flume发送数据的Python实现"/>
+<meta name="twitter:description" content="前面说到，因为兼容之前的旧项目（使用的scribe收集日志，但facebook好像早就停止更新维护），现在的收集架构是scribe&#43;flum"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Eric&#39;s blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Eric&#39;s blog</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">通过Thrift source向Flume发送数据的Python实现</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-08-16 </span>
+        
+          <span class="more-meta"> 1513 words </span>
+          <span class="more-meta"> 4 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents"></nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>前面说到，因为兼容之前的旧项目（使用的scribe收集日志，但facebook好像早就停止更新维护），现在的收集架构是scribe+flume，故Flume使用Thrift source.</p>
+<p>另外，测试环境下因为scribe日志机器和flume不在一台机器，所以这里使用python将数据发送到flume进行测试，以下是具体的实现过程:</p>
+<blockquote>
+<p>环境：Python 2.6.6/CDH-5.8.3 Flume 1.8/Thrift 0.5.0/</p>
+</blockquote>
+<p>首先，我们需要一个Thrift协议的Python Flume客户端的模块，这个模块可以根据Thrift的定义自动生成。先从flume官网下载src源码包 ：</p>
+<p><code>wget  http://www.apache.org/dist/flume/1.8.0/apache-flume-1.8.0-src.tar.gz</code></p>
+<!-- raw HTML omitted -->
+<p>下载到本地之后解压，在目录apache-flume-1.8.0-src\flume-ng-sdk\src\main\thrift下有Thrift对应的定义文件，并用它来生成对应的客户端模块：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">tar -xzvf apache-flume-1.8.0-src.tar.gz
+
+cd apache-flume-1.8.0-src\flume-ng-sdk\src\main\thrift
+
+thrift --gen py flume.thrit
+
+</code></pre></td></tr></table>
+</div>
+</div><p>你会在当前目录下得到一个叫做gen-py的目录，我们将其更名为genpy之后，放到Python的系统模块路径中去：</p>
+<p><code>mv gen-py/  /usr/lib/python2.6/site-packag/genpy</code></p>
+<p>此时，你就可以通过以下过程来引用这个模块了：</p>
+<blockquote>
+<p>[GCC 4.4.7 20120313 (Red Hat 4.4.7-3)] on linux2
+Type &ldquo;help&rdquo;, &ldquo;copyright&rdquo;, &ldquo;credits&rdquo; or &ldquo;license&rdquo; for more information.
+from genpy import flume
+dir(flume)
+['<strong>all</strong>', &lsquo;<strong>builtins</strong>', &lsquo;<strong>doc</strong>', &lsquo;<strong>file</strong>', &lsquo;<strong>name</strong>', &lsquo;<strong>package</strong>', &lsquo;<strong>path</strong>']</p>
+</blockquote>
+<ul>
+<li>代码进行测试</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">#!/usr/bin/env python
+#encoding: utf-8
+from genpy.flume import ThriftSourceProtocol  
+from genpy.flume.ttypes import ThriftFlumeEvent  
+from thrift.transport import TTransport, TSocket  
+from thrift.protocol import TCompactProtocol  
+  
+class _Transport(object):  
+    def __init__(self, thrift_host, thrift_port, timeout=None, unix_socket=None):  
+        self.thrift_host = thrift_host  
+        self.thrift_port = thrift_port  
+        self.timeout = timeout  
+        self.unix_socket = unix_socket 
+        self._socket = TSocket.TSocket(self.thrift_host, self.thrift_port, self.unix_socket)  
+        self._transport_factory = TTransport.TFramedTransportFactory()  
+        self._transport = self._transport_factory.getTransport(self._socket)  
+          
+    def connect(self):  
+        try:  
+            if self.timeout:  
+                self._socket.setTimeout(self.timeout)  
+            if not self.is_open():  
+                self._transport = self._transport_factory.getTransport(self._socket)  
+                self._transport.open()  
+        except Exception, e:
+            print &#39;#&#39;*20  
+            print(e)  
+            self.close()  
+                 
+    def is_open(self):  
+        return self._transport.isOpen()  
+      
+    def get_transport(self):  
+        return self._transport  
+      
+    def close(self):  
+        self._transport.close()  
+          
+class FlumeClient(object):  
+    def __init__(self, thrift_host, thrift_port, timeout=None, unix_socket=None):  
+        self._transObj = _Transport(thrift_host, thrift_port, timeout=timeout, unix_socket=unix_socket)  
+        self._protocol = TCompactProtocol.TCompactProtocol(trans=self._transObj.get_transport())  
+        self.client = ThriftSourceProtocol.Client(iprot=self._protocol, oprot=self._protocol)  
+        self._transObj.connect()  
+          
+    def send(self, event):  
+        try:  
+            self.client.append(event)  
+        except Exception, e:  
+            print(e)  
+        finally:  
+            self._transObj.connect()  
+      
+    def send_batch(self, events):  
+        try:  
+            self.client.appendBatch(events)  
+        except Exception, e:  
+            print(e)  
+        finally:  
+            self._transObj.connect()  
+      
+    def close(self):  
+        self._transObj.close()  
+              
+if __name__ == &#39;__main__&#39;:  
+    import random  
+    flume_client = FlumeClient(&#39;xxxxxx&#39;,4444)  
+    events = [ThriftFlumeEvent({&#39;GAMENAME&#39;:&#39;NYHX&#39;},&#39;NYevents under hello world %s&#39; %(random.randint(0, 100))) for _ in range(100)]    
+    events1 = [ThriftFlumeEvent({&#39;GAMENAME&#39;:&#39;FSZHS&#39;},&#39;FSevents under hello world %s&#39; %(random.randint(0, 100))) for _ in range(100)]  
+    flume_client.send_batch(events)  
+    flume_client.send_batch(events1)  
+    flume_client.close() 
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>贴上flume的配置，这里使用selector进行筛选，只输出header内容为FSZHS的日志</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">tier1.sources.source1.selector.type = multiplexing
+tier1.sources.source1.selector.header = GAMENAME
+tier1.sources.source1.selector.mapping.FSZHS = channel1
+
+
+# 配置kafka接收数据
+#tier1.sinks.sink1.type = org.apache.flume.sink.kafka.KafkaSink
+#tier1.sinks.sink1.brokerList = localhost:9092
+#tier1.sinks.sink1.topic = test
+#tier1.sinks.sink1.serializer.class = kafka.serializer.StringEncoder
+#tier1.sinks.sink1.channel = channel1
+</code></pre></td></tr></table>
+</div>
+</div><p>然后日志输出了指定header的内容</p>
+<blockquote>
+<p>2019-08-16 10:57:41,700 (SinkRunner-PollingRunner-DefaultSinkProcessor) [INFO - org.apache.flume.sink.LoggerSink.process(LoggerSink.java:95)] Event: { headers:{GAMENAME= <strong>FSZHS</strong> } body: 46 53 65 76 65 6E 74 73 20 75 6E 64 65 72 20 68 FSevents under h }
+2019-08-16 10:57:41,701 (SinkRunner-PollingRunner-DefaultSinkProcessor) [INFO - org.apache.flume.sink.LoggerSink.process(LoggerSink.java:95)] Event: { headers:{GAMENAME=<strong>FSZHS</strong>} body: 46 53 65 76 65 6E 74 73 20 75 6E 64 65 72 20 68 FSevents under h }
+2019-08-16 10:57:41,701 (SinkRunner-PollingRunner-DefaultSinkProcessor) [INFO - org.apache.flume.sink.LoggerSink.process(LoggerSink.java:95)] Event: { headers:{GAMENAME=<strong>FSZHS</strong>} body: 46 53 65 76 65 6E 74 73 20 75 6E 64 65 72 20 68 FSevents under h }
+2019-08-16 10:57:41,702 (SinkRunner-PollingRunner-DefaultSinkProcessor) [INFO - org.apache.flume.sink.LoggerSink.process(LoggerSink.java:95)] Event: { headers:{GAMENAME=<strong>FSZHS</strong>} body: 46 53 65 76 65 6E 74 73 20 75 6E 64 65 72 20 68 FSevents under h }
+2019-08-16 10:57:41,703 (SinkRunner-PollingRunner-DefaultSinkProcessor) [INFO - org.apache.flume.sink.LoggerSink.process(LoggerSink.java:95)] Event: { headers:{GAMENAME=<strong>FSZHS</strong>} body: 46 53 65 76 65 6E 74 73 20 75 6E 64 65 72 20 68 FSevents under h }
+2019-08-16 10:57:41,703 (SinkRunner-PollingRunner-DefaultSinkProcessor) [INFO - org.apache.flume.sink.LoggerSink.process(LoggerSink.java:95)] Event: { headers:{GAMENAME=<strong>FSZHS</strong>} body: 46 53 65 76 65 6E 74 73 20 75 6E 64 65 72 20 68 FSevents under h }
+2019-08-16 10:57:41,704 (SinkRunner-PollingRunner-DefaultSinkProcessor) [INFO - org.apache.flume.sink.LoggerSink.process(LoggerSink.java:95)] Event: { headers:{GAMENAME=<strong>FSZHS</strong>} body: 46 53 65 76 65 6E 74 73 20 75 6E 64 65 72 20 68 FSevents under h }</p>
+</blockquote>
+<p>下面代码为监控日志文件并实时发送给flume：
+大体流程，读取日志，发送到flume，然后记录读取位置。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">#!/usr/bin/env python
+# encoding: utf-8
+from multiprocessing.dummy import Pool as ThreadPool
+import time,datetime,os,sys
+
+from flume import FlumeClient
+from genpy.flume.ttypes import ThriftFlumeEvent
+
+hour=datetime.datetime.now().strftime(&#39;%H&#39;)
+
+if hour == &#39;23&#39;:
+    day=(datetime.datetime.now() + datetime.timedelta(days=1)).strftime(&#39;%Y-%m-%d&#39;)
+else:
+    day=datetime.datetime.now().strftime(&#39;%Y-%m-%d&#39;)
+
+def read_server():
+    time.sleep(5)
+    while True:
+        try:
+            if not os.path.exists(&#39;/data/scribe/log_xxx/PRODUCT_xxx_ANDR_%s/PRODUCT_xxx_ANDR_%s_00000&#39;%(day,day)):
+                print(&#39;服务端日志文件不存在,sleep........50&#39;)
+                time.sleep(50)
+                continue
+            fread_tell = &#39;0&#39;
+            if os.path.exists(&#39;/home/eric/servertell/server_tell_%s.txt&#39; % day):
+                fread = open(&#39;/home/eric/servertell/server_tell_%s.txt&#39; % day)
+                fread_tells = fread.readlines()
+                fread_tell = fread_tells[-1]
+                fread.close()
+            else:
+                fread = open(&#39;/home/eric/servertell/server_tell_%s.txt&#39; % day,&#39;a+&#39;)
+                fread.write(&#39;0\n&#39;)
+                fread.close()
+            ffile = open(&#39;/data/scribe/log_xxx/PRODUCT_xxxx_ANDR_%s/PRODUCT_xxx_ANDR_%s_00000&#39;%(day,day))
+            if not len(fread_tell):
+                continue
+            ffile.seek(int(fread_tell))
+            lines = ffile.readlines()
+            log = None
+            print&#39;未读行数======&#39;,(len(lines))
+            if len(lines)&lt;1:
+                time.sleep(10)
+                print &#39;行数少于1休眠10s..................&#39;
+            else:
+                for line in lines:
+                    if line == line.strip() or len(line)&lt;10:
+                        time.sleep(5)
+                        print &#34;空行或者小于10行..........&#34;
+                        continue
+                    else:
+                        print &#34;reading.................&#34;
+                        print line
+                        flume_client = FlumeClient(&#39;xxxxxxx&#39;,4444)
+                        events1 = [ThriftFlumeEvent({&#39;GAMENAME&#39;:&#39;FSZHS&#39;},line.strip(&#39;\n&#39;))]
+                        flume_client.send_batch(events1)
+                        #bilog.sendBI(line.strip(&#39;\n&#39;),&#39;PRODUCT_CKQY_ANDR_%s&#39;%(day))
+            where1 = ffile.tell()
+            while True:
+                where1 = where1 -1
+                seek = ffile.seek(where1,os.SEEK_SET)
+                if ffile.read(1)==&#39;\n&#39;:
+                    break
+            print &#39;读取位置&#39;,(where1)
+            f = open(&#39;/home/eric/servertell/server_tell_%s.txt&#39; % day,&#39;a+&#39;)
+            f.write(&#39;\n&#39;)
+            f.write(str(where1))
+            f.close()
+            ffile.close()
+            if log:
+                log.close()
+        except Exception as e:
+            traceback.print_exc()
+            time.sleep(5)
+            continue
+if __name__ == &#39;__main__&#39;:
+    pool = ThreadPool(processes = 1)
+    pool.apply_async(read_server)
+    pool.close()
+    pool.join()
+</code></pre></td></tr></table>
+</div>
+</div><p>至此日志转发完成。</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">Eric</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2019-08-16
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/flume/">flume</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/2019/10/15/centos7-5%E7%A6%BB%E7%BA%BF%E6%90%AD%E5%BB%BAcdh6-3/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Centos7.5离线搭建CDH6.3</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/2019/08/15/flume-kafka-flink-redis%E6%9E%84%E5%BB%BA%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%AE%9E%E6%97%B6%E5%A4%84%E7%90%86%E7%B3%BB%E7%BB%9F%E5%8D%95%E6%9C%BA%E7%8E%AF%E5%A2%83-%E7%8E%AF%E5%A2%83%E7%AF%87/">
+            <span class="next-text nav-default">Flume&#43;Kafka&#43;Flink&#43;Redis构建大数据实时处理系统（单机环境）--环境篇</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2018 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Eric</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

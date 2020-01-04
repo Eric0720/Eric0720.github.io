@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>CDH6.3.1开启kerberos - Eric&#39;s blog - A super concise theme for Hugo</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Eric" /><meta name="description" content="环境： 基于centos 7.5,CDH 6.3.1 一.安装kerberos kerberso是什么 之前没有接触过kerberos，最近项目需要基于CDH的多租户管理，" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.62.1 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/2019/12/30/cdh6-3-1%E5%BC%80%E5%90%AFkerberos/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="CDH6.3.1开启kerberos" />
+<meta property="og:description" content="环境： 基于centos 7.5,CDH 6.3.1 一.安装kerberos kerberso是什么 之前没有接触过kerberos，最近项目需要基于CDH的多租户管理，" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/2019/12/30/cdh6-3-1%E5%BC%80%E5%90%AFkerberos/" />
+<meta property="article:published_time" content="2019-12-30T23:12:45+08:00" />
+<meta property="article:modified_time" content="2019-12-30T23:12:45+08:00" />
+<meta itemprop="name" content="CDH6.3.1开启kerberos">
+<meta itemprop="description" content="环境： 基于centos 7.5,CDH 6.3.1 一.安装kerberos kerberso是什么 之前没有接触过kerberos，最近项目需要基于CDH的多租户管理，">
+<meta itemprop="datePublished" content="2019-12-30T23:12:45&#43;08:00" />
+<meta itemprop="dateModified" content="2019-12-30T23:12:45&#43;08:00" />
+<meta itemprop="wordCount" content="4359">
+
+
+
+<meta itemprop="keywords" content="CDH," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="CDH6.3.1开启kerberos"/>
+<meta name="twitter:description" content="环境： 基于centos 7.5,CDH 6.3.1 一.安装kerberos kerberso是什么 之前没有接触过kerberos，最近项目需要基于CDH的多租户管理，"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Eric&#39;s blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Eric&#39;s blog</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">CDH6.3.1开启kerberos</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-12-30 </span>
+        
+          <span class="more-meta"> 4359 words </span>
+          <span class="more-meta"> 9 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#a-namefenced-code-blockkerberosa">一.安装kerberos</a></li>
+    <li><a href="#a-namefenced-code-blockcmkerberosa">二.进入CM管理页面配置kerberos</a></li>
+    <li><a href="#a-namefenced-code-blockkerberosa-1">三.kerberos的使用</a></li>
+    <li><a href="#a-namefenced-code-block-kerberos--hivea"> 四.下面我们来设置下kerberos  hive环境</a></li>
+    <li><a href="#a-namefenced-code-blocka">五.问题与总结</a>
+      <ul>
+        <li><a href="#heading">其他总结</a></li>
+        <li><a href="#other">other:</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p>环境： 基于centos 7.5,CDH 6.3.1</p>
+</blockquote>
+<p><img src="/img/CDH.png" alt="CDH"><img src="http://web.mit.edu/kerberos/images/dog-ring.jpg" alt="photo"></p>
+<h2 id="a-namefenced-code-blockkerberosa"><!-- raw HTML omitted -->一.安装kerberos<!-- raw HTML omitted --></h2>
+<p><strong>kerberso是什么</strong></p>
+<p>之前没有接触过kerberos，最近项目需要基于CDH的多租户管理，所以简单了解了下。kerberos要做的工作就是验证进行权限申请的人是他声称的那个人的问题。</p>
+<p><strong>Kerberos协议：</strong></p>
+<pre><code>Kerberos协议主要用于计算机网络的身份鉴别(Authentication), 其特点是用户只需输入一次身份验证信息就可以凭借此验证获得的票据   
+(ticket-granting ticket)访问多个服务，即SSO(Single Sign On)。由于在每个Client和Service之间建立了共享密钥，使得该协
+议具 有相当的安全性。
+</code></pre>
+<p>一句话来概括kerberos是用来做什么的：</p>
+<pre><code> “kerberos主要是用来做网络通信时候的身份认证（Authentication）”
+</code></pre>
+<p>kerberos的简单原理图如下,kerberos的原理实现远远复杂的多。</p>
+<!-- raw HTML omitted -->
+<p><img src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=939042365,379837012&amp;fm=26&amp;gp=0.jpg" alt="photo"></p>
+<p>kerberos原理介绍参考资料：<a href="https://www.jianshu.com/p/fc2d2dbd510b">简书</a></p>
+<p><strong>1.安装KDC服务</strong></p>
+<p>可以将KDC安装在集群内也可以安装在单独的机器。这里安装到CM（h1）上</p>
+<p>安装命令：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(base) [root@h1 ~]#  yum -y install krb5-server krb5-libs krb5-auth-dialog krb5-workstation 
+
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>2.修改kdc的配置文件</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(base) [root@h1 ~]#  vim /etc/kbc5.conf 
+
+</code></pre></td></tr></table>
+</div>
+</div><p>将以下内容粘贴进去</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># Configuration snippets may be placed in this directory as well
+includedir /etc/krb5.conf.d/
+[logging]
+ default = FILE:/var/log/krb5libs.log
+ kdc = FILE:/var/log/krb5kdc.log
+ admin_server = FILE:/var/log/kadmind.log
+[libdefaults]
+ dns_lookup_realm = false
+ ticket_lifetime = 24h
+ renew_lifetime = 7d
+ forwardable = true
+ rdns = false
+ pkinit_anchors = /etc/pki/tls/certs/ca-bundle.crt
+ default_realm = CAT.COM
+ #default_ccache_name = KEYRING:persistent:%{uid}
+[realms]
+ CAT.COM = {
+  kdc = master
+  admin_server = master
+ }
+[domain_realm]
+.cat.com = CAT.COM
+cat.com = CAT.COM
+
+</code></pre></td></tr></table>
+</div>
+</div><p>*cat.com/CAT.COM。 为自定义名称</p>
+<p>*默认ticket有效时常为24H,续约时长为7D,每次的续约要在有效期内进行续约,如24小时ticket时长，需要在24小时内进行续约。否则将会过期无法续约。</p>
+<p>续约方法：</p>
+<p>sudo到需要续约的用户下，并且使用kinit username进行登录。</p>
+<p><code>kinit -R</code>进行续约  然后用 <code>klist</code> 查看过期时间。</p>
+<p><strong>3 修改/var/kerberos/krb5kdc/kadm5.acl</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(base) [root@h1 ~]# vim /var/kerberos/krb5kdc/kadm5.acl 
+
+*/admin@HADOOP.COM      *
+*/master@HADOOP.COM      *
+
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>4 修改 /var/kerberos/krb5kdc/kdc.conf</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(base) [root@h1 ~]# vim /var/kerberos/krb5kdc/kdc.conf
+
+</code></pre></td></tr></table>
+</div>
+</div><p>将以下内容复制</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">[kdcdefaults]
+ kdc_ports = 88
+ kdc_tcp_ports = 88
+
+[realms]
+ CAT.COM = {
+  #master_key_type = aes256-cts
+  #ticket_lifetime = 10m
+  max_renewable_life= 7d 0h 0m 0s
+  acl_file = /var/kerberos/krb5kdc/kadm5.acl
+  dict_file = /usr/share/dict/words
+  admin_keytab = /var/kerberos/krb5kdc/kadm5.keytab
+  supported_enctypes = aes256-cts:normal aes128-cts:normal des3-hmac-sha1:normal arcfour-hmac:normal camellia256-cts:normal camellia128-cts:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal
+ }
+  
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>5 创建Kerberos数据库</strong></p>
+<p>创建命令：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(base) [root@h1 ~]#  kdb5_util create –r CAT.COM -s 
+
+Loading random data
+
+Initializing database &#39;/var/kerberos/krb5kdc/principal&#39; for realm &#39;CAT.COM&#39;,
+
+master key name &#39;K/M@CAT.COM&#39;
+
+You will be prompted for the database Master Password.
+
+It is important that you NOT FORGET this password.
+
+Enter KDC database master key:
+
+Re-enter KDC database master key to verify:
+
+#此处需要输入Kerberos数据库的密码。
+
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>6 创建Kerberos的管理账号</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(base) [root@h1 ~]# kadmin.local
+
+Authenticating as principal root/admin@CAT.COM with password.
+
+kadmin.local:  addprinc admin/admin@CAT.COM
+
+WARNING: no policy specified for admin/admin@CAT.COM; defaulting to no policy
+
+Enter password for principal &#34;admin/admin@CAT.COM&#34;:
+
+Re-enter password for principal &#34;admin/admin@CAT.COM&#34;:
+
+Principal &#34;admin/admin@CAT.COM&#34; created.
+
+kadmin.local:  exit
+
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>7.启动krb5dc，kadmin，并设置kerberos开机自启</strong></p>
+<p>启动krb5dc,kadmin</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">[root@h1 ~]# systemctl enable kadmin
+Created symlink from /etc/systemd/system/multi-user.target.wants/kadmin.service to /usr/lib/systemd/system/kadmin.service.
+[root@h1 ~]# systemctl start krb5kdc
+[root@h1 ~]# systemctl start kadmin
+
+</code></pre></td></tr></table>
+</div>
+</div><p>设置开机自启</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">[root@h1 ~]# systemctl enable krb5kdc
+
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>8.集群其他机器安装Kerberos客户端，包括KDC机器</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">[root@h2 ~]#yum -y install krb5-libs krb5-workstation
+[root@h3 ~]#yum -y install krb5-libs krb5-workstation
+[root@h4 ~]#yum -y install krb5-libs krb5-workstation
+
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>9 在CM服务器上安装额外的包</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">[root@h1 ~]# yum -y install openldap-clients
+
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>10 将KDC server中的krb5.conf拷贝到集群所有机器的/etc/</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">scp /etc/krb5.conf root@h2:/etc/
+
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>11 在KDC中给Cloudera Manager添加管理员账号</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(base) [root@h2 ~]# kadmin.local
+
+Authenticating as principal admin/admin@CAT.COM with password.
+
+kadmin.local:  addprinc cloudera-scm/admin@CAT.COM
+
+WARNING: no policy specified for cloudera-scm/admin@CAT.COM; defaulting to no policy
+
+Enter password for principal &#34;cloudera-scm/admin@CAT.COM&#34;:
+
+Re-enter password for principal &#34;cloudera-scm/admin@CAT.COM&#34;:
+
+Principal &#34;cloudera-scm/admin@CAT.COM&#34; created.
+
+kadmin.local:  exit
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="a-namefenced-code-blockcmkerberosa"><!-- raw HTML omitted -->二.进入CM管理页面配置kerberos<!-- raw HTML omitted --></h2>
+<p>选择管理&gt;安全&gt;启用kerberos</p>
+<p><img src="/img/CDH-k1.png" alt="CDH"></p>
+<p><img src="/img/CDH-k2.png" alt="CDH"></p>
+<ul>
+<li>全部勾选
+<img src="/img/CDH-k3.png" alt="CDH"></li>
+<li>KDCserver和KDC admin server选择自己的KDC安装机器hostname
+<img src="/img/CDH-k4.png" alt="CDH"></li>
+<li>不勾选
+<img src="/img/CDH-k5.png" alt="CDH"></li>
+<li>填写上面11步设置的用户和密码即可，然后一路确认。s
+<img src="/img/CDH-k6.png" alt="CDH"></li>
+<li>完成之后Kerberos会创建CDH相关用户，使用命令查看当前的所有kerberos用户，不过这些自动创建的用户不知道如何登陆，因为没有密码。
+<img src="/img/user_list.png" alt="CDH"></li>
+</ul>
+<h2 id="a-namefenced-code-blockkerberosa-1"><!-- raw HTML omitted -->三.kerberos的使用<!-- raw HTML omitted --></h2>
+<p>创建user1测试用户，执行Hive和MapReduce任务，需要在集群所有节点创建user1用户</p>
+<p><strong>1.使用kadmin创建一个user1的principal</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(base) [root@h1 ~]# kadmin.local
+
+Authenticating as principal admin/admin@CAT.COM with password.
+
+kadmin.local:  addprinc user1@CAT.COM
+
+WARNING: no policy specified for user1@CAT.COM; defaulting to no policy
+
+Enter password for principal &#34;user1@CATCOM&#34;:
+
+Re-enter password for principal &#34;user1@CAT.COM&#34;:
+
+Principal &#34;user1@CAT.COM&#34; created.
+
+kadmin.local:  exit
+
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>2.使用user1用户登录Kerberos</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">[root@h1 ~]# kdestroy
+[root@h1 ~]# kinit user1
+#设置user1登陆密码
+Password for user1@CAT.COM:
+#查看user1的有效期
+(base) [root@h1 ~]# klist
+Ticket cache: FILE:/tmp/krb5cc_0
+Default principal: user1@CAT.COM
+Valid starting       Expires              Service principal
+12/26/2019 18:29:17  12/27/2019 18:29:17  krbtgt/CAT.COM@CAT.COM
+        renew until 01/03/2019 18:29:17
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>3.在集群所有节点添加user1用户</strong></p>
+<p>一定要在所有机器添加，因为任务是分布式的，比如yarn和mr会分配container给不同的机器，不然跑任务会报错。</p>
+<ul>
+<li>添加user1用户</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">[root@h1 ~]#useradd user1
+[root@h2 ~]#useradd user1
+[root@h3 ~]#useradd user1
+
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>把user1用户添加到hdfs,hadoop用户组中</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">[root@h1 ~]# usermod -G hdfs,hadoop user1
+[root@h1 ~]# usermod -G hadoop user1
+
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>4.运行MapReduce作业</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">#先用user1登陆kerberos 
+[root@h1 conf]# su - user1
+[root@h1 conf]# kinit user1
+Password for user1@CAT.COM: 
+[root@h1 conf]# klist
+Ticket cache: FILE:/tmp/krb5cc_0
+Default principal: user1@CAT.COM
+Valid starting       Expires              Service principal
+12/30/2019 22:27:40  12/31/2019 22:27:40  krbtgt/CAT.COM@CAT.COM
+        renew until 01/06/2020 22:27:40
+#测试mr demo        
+[root@h1 conf]# hadoop jar /opt/cloudera/parcels/CDH/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 10 1
+WARNING: Use &#34;yarn jar&#34; to launch YARN applications.
+Number of Maps  = 10
+Samples per Map = 1
+Wrote input for Map #0
+Wrote input for Map #1
+Wrote input for Map #2
+Wrote input for Map #3
+Wrote input for Map #4
+Wrote input for Map #5
+Wrote input for Map #6
+Wrote input for Map #7
+Wrote input for Map #8
+Wrote input for Map #9
+Starting Job
+19/12/30 22:32:49 INFO client.RMProxy: Connecting to ResourceManager at h1.cat.com/192.168.1.171:8032
+19/12/30 22:32:50 INFO hdfs.DFSClient: Created token for user2: HDFS_DELEGATION_TOKEN owner=user2@CAT.COM, renewer=yarn, realUser=, issueDate=1577716370019, maxDate=1578321170019, sequenceNumber=4, masterKeyId=10 on 192.168.1.171:8020
+19/12/30 22:32:50 INFO security.TokenCache: Got dt for hdfs://h1.cat.com:8020; Kind: HDFS_DELEGATION_TOKEN, Service: 192.168.1.171:8020, Ident: (token for user2: HDFS_DELEGATION_TOKEN owner=user2@CAT.COM, renewer=yarn, realUser=, issueDate=1577716370019, maxDate=1578321170019, sequenceNumber=4, masterKeyId=10)
+19/12/30 22:32:50 INFO mapreduce.JobResourceUploader: Disabling Erasure Coding for path: /user/user2/.staging/job_1577701614246_0003
+19/12/30 22:32:50 INFO input.FileInputFormat: Total input files to process : 10
+19/12/30 22:32:50 INFO mapreduce.JobSubmitter: number of splits:10
+19/12/30 22:32:50 INFO Configuration.deprecation: yarn.resourcemanager.system-metrics-publisher.enabled is deprecated. Instead, use yarn.system-metrics-publisher.enabled
+19/12/30 22:32:50 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1577701614246_0003
+19/12/30 22:32:50 INFO mapreduce.JobSubmitter: Executing with tokens: [Kind: HDFS_DELEGATION_TOKEN, Service: 192.168.1.171:8020, Ident: (token for user2: HDFS_DELEGATION_TOKEN owner=user2@CAT.COM, renewer=yarn, realUser=, issueDate=1577716370019, maxDate=1578321170019, sequenceNumber=4, masterKeyId=10)]
+19/12/30 22:32:51 INFO conf.Configuration: resource-types.xml not found
+19/12/30 22:32:51 INFO resource.ResourceUtils: Unable to find &#39;resource-types.xml&#39;.
+19/12/30 22:32:51 INFO impl.YarnClientImpl: Submitted application application_1577701614246_0003
+19/12/30 22:32:51 INFO mapreduce.Job: The url to track the job: http://h1.cat.com:8088/proxy/application_1577701614246_0003/
+19/12/30 22:32:51 INFO mapreduce.Job: Running job: job_1577701614246_0003
+19/12/30 22:33:04 INFO mapreduce.Job: Job job_1577701614246_0003 running in uber mode : false
+19/12/30 22:33:04 INFO mapreduce.Job:  map 0% reduce 0%
+19/12/30 22:33:14 INFO mapreduce.Job:  map 20% reduce 0%
+19/12/30 22:33:19 INFO mapreduce.Job:  map 30% reduce 0%
+19/12/30 22:33:20 INFO mapreduce.Job:  map 40% reduce 0%
+19/12/30 22:33:24 INFO mapreduce.Job:  map 50% reduce 0%
+19/12/30 22:33:25 INFO mapreduce.Job:  map 60% reduce 0%
+19/12/30 22:33:30 INFO mapreduce.Job:  map 80% reduce 0%
+19/12/30 22:33:35 INFO mapreduce.Job:  map 100% reduce 0%
+19/12/30 22:33:41 INFO mapreduce.Job:  map 100% reduce 100%
+19/12/30 22:33:42 INFO mapreduce.Job: Job job_1577701614246_0003 completed successfully
+19/12/30 22:33:42 INFO mapreduce.Job: Counters: 54
+        File System Counters
+                FILE: Number of bytes read=49
+                FILE: Number of bytes written=2433690
+                FILE: Number of read operations=0
+                FILE: Number of large read operations=0
+                FILE: Number of write operations=0
+......................
+Job Finished in 53.382 seconds
+Estimated value of Pi is 3.60000000000000000000
+
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p><strong>测试连接 beelin</strong></p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">beeline&gt; !connect jdbc:hive2://localhost:10000/;principal=hive/h1@CAT.COM
+Connecting to jdbc:hive2://localhost:10000/;principal=hive/h1@CAT.COM
+Connected to: Apache Hive (version 2.1.1-cdh6.3.1)
+Driver: Hive JDBC (version 2.1.1-cdh6.3.1)
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+0: jdbc:hive2://localhost:10000/&gt; 
+
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>以上就完成了kerberos的设置</strong></p>
+<h2 id="a-namefenced-code-block-kerberos--hivea"><!-- raw HTML omitted --> 四.下面我们来设置下kerberos  hive环境<!-- raw HTML omitted --></h2>
+<p>需要完成以下设置，才可以使用hive</p>
+<ul>
+<li>不然可能会报下面的错误。</li>
+<li>两种情况下会报以下错误：</li>
+</ul>
+<blockquote>
+<p>1.ticket过期没有续约情况下
+2.没有生成keytab</p>
+</blockquote>
+<p>&ldquo;Failed on local exception: java.io.IOException: org.apache.hadoop.security.AccessControlException: Client cannot authenticate via:[TOKEN, KERBEROS]; Host Details : local host is: &ldquo;h1.cat.com/192.168.1.171&rdquo;; destination host is: &ldquo;h1.cat.com&rdquo;:8020; &quot;</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">[root@h1 ~]# hive     
+WARNING: Use &#34;yarn jar&#34; to launch YARN applications.
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/opt/cloudera/parcels/CDH-6.3.1-1.cdh6.3.1.p0.1470567/jars/log4j-slf4j-impl-2.8.2.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/opt/cloudera/parcels/CDH-6.3.1-1.cdh6.3.1.p0.1470567/jars/slf4j-log4j12-1.7.25.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+
+Logging initialized using configuration in jar:file:/opt/cloudera/parcels/CDH-6.3.1-1.cdh6.3.1.p0.1470567/jars/hive-common-2.1.1-cdh6.3.1.jar!/hive-log4j2.properties Async: false
+Exception in thread &#34;main&#34; java.lang.RuntimeException: java.io.IOException: Failed on local exception: java.io.IOException: org.apache.hadoop.security.AccessControlException: Client cannot authenticate via:[TOKEN, KERBEROS]; Host Details : local host is: &#34;h1.cat.com/192.168.1.171&#34;; destination host is: &#34;h1.cat.com&#34;:8020; 
+        at org.apache.hadoop.hive.ql.session.SessionState.start(SessionState.java:604)
+        at org.apache.hadoop.hive.ql.session.SessionState.beginStart(SessionState.java:545)
+        at org.apache.hadoop.hive.cli.CliDriver.run(CliDriver.java:763)
+        at org.apache.hadoop.hive.cli.CliDriver.main(CliDriver.java:699)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+        at java.lang.reflect.Method.invoke(Method.java:498)
+        at org.apache.hadoop.util.RunJar.run(RunJar.java:313)
+        at org.apache.hadoop.util.RunJar.main(RunJar.java:227)
+Caused by: java.io.IOException: Failed on local exception: java.io.IOException: org.apache.hadoop.security.AccessControlException: Client cannot authenticate via:[TOKEN, KERBEROS]; Host Details : local host is: &#34;h1.cat.com/192.168.1.171&#34;; destination host is: &#34;h1.cat.com&#34;:8020; 
+        at org.apache.hadoop.net.NetUtils.wrapException(NetUtils.java:808)
+        at org.apache.hadoop.ipc.Client.getRpcResponse(Client.java:1503)
+        at org.apache.hadoop.ipc.Client.call(Client.java:1445)
+        at org.apache.hadoop.ipc.Client.call(Client.java:1355)
+        at org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:228)
+        at org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:116)
+        at com.sun.proxy.$Proxy28.getFileInfo(Unknown Source)
+        at org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolTranslatorPB.getFileInfo(ClientNamenodeProtocolTranslatorPB.java:875)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+        at java.lang.reflect.Method.invoke(Method.java:498)
+        at org.apache.hadoop.io.retry.RetryInvocationHandler.invokeMethod(RetryInvocationHandler.java:422)
+        at org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invokeMethod(RetryInvocationHandler.java:165)
+        at org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invoke(RetryInvocationHandler.java:157)
+        at org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invokeOnce(RetryInvocationHandler.java:95)
+        at org.apache.hadoop.io.retry.RetryInvocationHandler.invoke(RetryInvocationHandler.java:359)
+        at com.sun.proxy.$Proxy29.getFileInfo(Unknown Source)
+        at org.apache.hadoop.hdfs.DFSClient.getFileInfo(DFSClient.java:1630)
+        at org.apache.hadoop.hdfs.DistributedFileSystem$29.doCall(DistributedFileSystem.java:1496)
+        at org.apache.hadoop.hdfs.DistributedFileSystem$29.doCall(DistributedFileSystem.java:1493)
+        at org.apache.hadoop.fs.FileSystemLinkResolver.resolve(FileSystemLinkResolver.java:81)
+        at org.apache.hadoop.hdfs.DistributedFileSystem.getFileStatus(DistributedFileSystem.java:1508)
+        at org.apache.hadoop.fs.FileSystem.exists(FileSystem.java:1617)
+        at org.apache.hadoop.hive.ql.session.SessionState.createRootHDFSDir(SessionState.java:712)
+        at org.apache.hadoop.hive.ql.session.SessionState.createSessionDirs(SessionState.java:650)
+        at org.apache.hadoop.hive.ql.session.SessionState.start(SessionState.java:580)
+        ... 9 more
+Caused by: java.io.IOException: org.apache.hadoop.security.AccessControlException: Client cannot authenticate via:[TOKEN, KERBEROS]
+        at org.apache.hadoop.ipc.Client$Connection$1.run(Client.java:756)
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>1.生成 keytab</strong></p>
+<p>在 KDC server 节点上执行下面命令：</p>
+<p>生成集群所有机器的keytab 汇总后发送给集群每个机器。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">cd /var/kerberos/krb5kdc/
+ 
+kadmin.local -q &#34;addprinc -randkey hive/h1.cat.com@CAT.COM &#34;
+kadmin.local -q &#34;addprinc -randkey hive/h2.cat.com@CAT.COM &#34;
+kadmin.local -q &#34;addprinc -randkey hive/h3.cat.com@CAT.COM &#34;
+ 
+kadmin.local -q &#34;xst  -k hive.keytab  hive/h1.cat.com@CAT.COM &#34;
+kadmin.local -q &#34;xst  -k hive.keytab  hive/h2.cat.com@CAT.COM &#34;
+kadmin.local -q &#34;xst  -k hive.keytab  hive/h3.cat.com@CAT.COM &#34;
+
+</code></pre></td></tr></table>
+</div>
+</div><p>*h1.cat.com为hostname,CAT.COM为kerber设置的安全域,在前面设置的。</p>
+<p><strong>2 拷贝 hive.keytab 文件到其他节点的 /etc/hive/conf 目录</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">$ scp hive.keytab cdh1:/etc/hive/conf
+$ scp hive.keytab cdh2:/etc/hive/conf
+$ scp hive.keytab cdh3:/etc/hive/conf
+</code></pre></td></tr></table>
+</div>
+</div><p>并设置权限，分别在 cdh1、cdh2、cdh3 上执行：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ssh cdh1 &#34;cd /etc/hive/conf/;chown hive:hadoop hive.keytab ;chmod 400 *.keytab&#34;
+$ ssh cdh2 &#34;cd /etc/hive/conf/;chown hive:hadoop hive.keytab ;chmod 400 *.keytab&#34;
+$ ssh cdh3 &#34;cd /etc/hive/conf/;chown hive:hadoop hive.keytab ;chmod 400 *.keytab&#34;
+
+</code></pre></td></tr></table>
+</div>
+</div><p>有了keytab 相当于有了永久凭证，不需要提供密码(如果修改 kdc 中的 principal 的密码，则该 keytab 就会失效)，所以其他用户如果对该文件有读权限，就可以冒充 keytab 中指定的用户身份访问 hadoop，所以 keytab 文件需要确保只对 owner 有读权限(0400)</p>
+<ul>
+<li>然后重启hive</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">
+[user1@h1 ~]$ kinit -kt hive.keytab hive/h1
+[user1@h1 ~]$ hive 
+
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>再次执行hive命令。运行正常</li>
+</ul>
+<hr>
+<h2 id="a-namefenced-code-blocka"><!-- raw HTML omitted -->五.问题与总结<!-- raw HTML omitted --></h2>
+<p><strong>1.连接beelin遇到的错误</strong></p>
+<p>问题貌似出在：</p>
+<blockquote>
+<p>1.没有把用户加到机器
+2.没有把用户添加到hdfs,hadoop用户组中</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">beeline&gt; !connect jdbc:hive2://h1:10000/;principal=hive/h1@CAT.COM
+Connecting to jdbc:hive2://h1:10000/;principal=hive/h1@CAT.COM
+19/12/30 17:36:50 [main]: WARN jdbc.HiveConnection: Failed to connect to h1:10000
+Could not open connection to the HS2 server. Please check the server URI and if the URI is correct, then ask the administrator to check the server status.
+Error: Could not open client transport with JDBC Uri: jdbc:hive2://h1:10000/;principal=hive/h1@CAT.COM: java.net.ConnectException: Connection refused (Connection refused) (state=08S01,code=0)
+
+
+beeline&gt; !connect jdbc:hive2://h1:10000/;principal=hive/h1@CAT.COM
+Connecting to jdbc:hive2://h1:10000/;principal=hive/h1@CAT.COM
+19/12/30 19:10:22 [main]: ERROR transport.TSaslTransport: SASL negotiation failure
+javax.security.sasl.SaslException: GSS initiate failed
+
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>2.hue报错,Kerberos Ticket Renewer无法启动</strong>
+错误：
+<img src="/img/hue-erro.png" alt="hue"></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">INFO kt_renewer
+Renewing kerberos ticket to work around kerberos 1.8.1: /bin/kinit -R -c /var/run/hue/hue_krb5_ccache
+ERROR kt_renewer Couldn&#39;t renew kerberos ticket in order to work around Kerberos 1.8.1 issue. Please check that the ticket for &#39;hue/$server1@ANYTHING.COM&#39; is still renewable:
+$ klist -f -c /var/run/hue/hue_krb5_ccache
+If the &#39;renew until&#39; date is the same as the &#39;valid starting&#39; date, the ticket cannot be renewed. Please check your KDC configuration, and the ticket renewal policy (maxrenewlife) for the &#39;hue/$server1@ANYTHING.COM&#39; and `krbtgt&#39; principals.
+[19/Feb/2019 07:32:04 ] settings INFO Welcome to Hue 3.9.0
+
+
+</code></pre></td></tr></table>
+</div>
+</div><p>原因是KDC配置有一项配置有问题
+/var/kerberos/krb5kdc/kdc.conf
+修改后重启就好。 注释 #ticket_lifetime = 10m 不应该写。ticket相关设置在client中设置</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">[kdcdefaults]
+ kdc_ports = 88
+ kdc_tcp_ports = 88
+
+[realms]
+ CAT.COM = {
+  #master_key_type = aes256-cts
+  #ticket_lifetime = 10m
+  max_renewable_life= 7d 0h 0m 0s
+  acl_file = /var/kerberos/krb5kdc/kadm5.acl
+  dict_file = /usr/share/dict/words
+  admin_keytab = /var/kerberos/krb5kdc/kadm5.keytab
+  supported_enctypes = aes256-cts:normal aes128-cts:normal des3-hmac-sha1:normal arcfour-hmac:normal camellia256-cts:normal ca
+mellia128-cts:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal
+ }
+</code></pre></td></tr></table>
+</div>
+</div><p>另外一个可能引起的问题是maxnewlisf配置有问题。
+大部分导致的原因是maxnewlife时间是0</p>
+<blockquote>
+<p>官方介绍
+<a href="https://docs.cloudera.com/documentation/manager/5-1-x/Configuring-Hadoop-Security-with-Cloudera-Manager/cm5chs_enable_hue_sec_s10.html">https://docs.cloudera.com/documentation/manager/5-1-x/Configuring-Hadoop-Security-with-Cloudera-Manager/cm5chs_enable_hue_sec_s10.html</a></p>
+</blockquote>
+<p>命令查看maxnewlife的配置: <code>kadmin.local -q 'getprinc krbtgt/CAT.COM@CAT.COM'</code>
+看是否为0，如果是0需要修改。</p>
+<p><img src="/img/setting.png" alt="setting"></p>
+<p>用两个命令修改,或者去配置文件/var/kerberos/krb5kdc/kdc.conf</p>
+<p>修改maxnew life时间</p>
+<p><code> modprinc -maxrenewlife 90day krbtgt/CAT.COM@CAT.COM</code></p>
+<p>修改单个用户的maxnew life时间</p>
+<p><code>modprinc -maxrenewlife 90day allow_renewable hue/h1.cat.com@CAT.COM</code></p>
+<p><strong>3.hive metastore问题:</strong></p>
+<p>原因是hive的keytab生成有误，metastore无法正常启动
+解决办法：按照上面的步骤重新生成新的keytab,然后发送到所有机器即可</p>
+<blockquote>
+<p>failure to login: for principal: <a href="mailto:hive/h1.cat.com@CAT.COM">hive/h1.cat.com@CAT.COM</a> from keytab hive.keytab javax.security.auth.logi
+n.LoginException: Checksum failed</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">2019-12-30 18:22:08,407 ERROR org.apache.hadoop.hive.metastore.HiveMetaStore: [main]: org.apache.thrift.transport.TTransportException: org.apache
+.hadoop.security.KerberosAuthException: failure to login: for principal: hive/h1.cat.com@CAT.COM from keytab hive.keytab javax.security.auth.logi
+n.LoginException: Checksum failed
+        at org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge$Server.&lt;init&gt;(HadoopThriftAuthBridge.java:327)
+        at org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge.createServer(HadoopThriftAuthBridge.java:101)
+        at org.apache.hadoop.hive.metastore.HiveMetaStore.startMetaStore(HiveMetaStore.java:7291)
+        at org.apache.hadoop.hive.metastore.HiveMetaStore.main(HiveMetaStore.java:7210)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+        at java.lang.reflect.Method.invoke(Method.java:498)
+        at org.apache.hadoop.util.RunJar.run(RunJar.java:313)
+        at org.apache.hadoop.util.RunJar.main(RunJar.java:227)
+Caused by: org.apache.hadoop.security.KerberosAuthException: failure to login: for principal: hive/h1.cat.com@CAT.COM from keytab hive.keytab jav
+ax.security.auth.login.LoginException: Checksum failed
+
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>================================================================</p>
+</blockquote>
+<h3 id="heading">其他总结</h3>
+<p><strong>给新建用户分配权限步骤</strong></p>
+<ul>
+<li>1.创建kerberos用户和密码</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">[root@bogon ~]# kadmin.local -q &#34;addprinc user1&#34;
+Authenticating as principal root/admin@CAT.COM with password.
+WARNING: no policy specified for user1@CAT.COM; defaulting to no policy
+Enter password for principal &#34;user1@CAT.COM&#34;: 
+Re-enter password for principal &#34;user1@CAT.COM&#34;: 
+Principal &#34;user1@CAT.COM&#34; created.
+
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p>2.在所有机器节点添加。User1用户
+useradd user1</p>
+</li>
+<li>
+<p>3.登陆验证</p>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Su - user1
+Kinit user1
+输入上面设置的密码
+klist查看有效期
+
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="other">other:</h3>
+<blockquote>
+<p>kdestroy 清理当前的凭证。或者是退出当前的kerberos用户
+Kinit -R 续订
+不同的用户在不同的机器的ticket的时间不同，因为取决于配置文件/etc/krb5.conf
+必须在ticket有效期内续约才可以
+一个机器，只能同时运行一个kerber用户，如果a用户登陆了user1 b用户登陆了user2那么user1的角色自动切换为user2
+kadmin.local -q &lsquo;getprinc <a href="mailto:krbtgt/CAT.COM@CAT.COM">krbtgt/CAT.COM@CAT.COM</a>&rsquo; 查看配置情况
+<a href="mailto:hue/h1.cat.com@CAT.COM">hue/h1.cat.com@CAT.COM</a>
+配置文件目录  /etc/krb5.conf，/var/kerberos/krb5kdc/kdc.conf</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">启动命令：
+systemctl start krb5kdc
+systemctl start kadmin
+查看kerberos用户列表
+`kadmin.local -q &#34;listprincs&#34;`
+
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>kerberos的记录就完成了。下一篇研究sentry</strong></p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">Eric</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2019-12-30
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/cdh/">CDH</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/2020/01/02/cdh6-3-1%E5%BC%80%E5%90%AFsentry/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">CDH6.3.1使用sentry权限管理</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/2019/12/19/mac-hexo-test/">
+            <span class="next-text nav-default">mac-hexo-test</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2018 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Eric</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
