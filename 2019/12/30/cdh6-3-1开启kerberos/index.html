@@ -48,7 +48,7 @@
 <meta itemprop="description" content="环境： 基于centos 7.5,CDH 6.3.1 一.安装kerberos kerberso是什么 之前没有接触过kerberos，最近项目需要基于CDH的多租户管理，">
 <meta itemprop="datePublished" content="2019-12-30T23:12:45&#43;08:00" />
 <meta itemprop="dateModified" content="2019-12-30T23:12:45&#43;08:00" />
-<meta itemprop="wordCount" content="4359">
+<meta itemprop="wordCount" content="4379">
 
 
 
@@ -85,8 +85,8 @@
         <li class="mobile-menu-item">Archives</li>
       </a><a href="/tags/">
         <li class="mobile-menu-item">Tags</li>
-      </a><a href="/categories/">
-        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
       </a>
   </ul>
 </nav>
@@ -105,7 +105,7 @@
       </li><li class="menu-item">
         <a class="menu-item-link" href="/tags/">Tags</a>
       </li><li class="menu-item">
-        <a class="menu-item-link" href="/categories/">Categories</a>
+        <a class="menu-item-link" href="/about/">About</a>
       </li>
   </ul>
 </nav>
@@ -122,7 +122,7 @@
       <div class="post-meta">
         <span class="post-time"> 2019-12-30 </span>
         
-          <span class="more-meta"> 4359 words </span>
+          <span class="more-meta"> 4379 words </span>
           <span class="more-meta"> 9 mins read </span>
         <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> times read </span>
       </div>
@@ -506,18 +506,16 @@ kadmin.local:  exit
 <p>选择管理&gt;安全&gt;启用kerberos</p>
 <p><img src="/img/CDH-k1.png" alt="CDH"></p>
 <p><img src="/img/CDH-k2.png" alt="CDH"></p>
-<ul>
-<li>全部勾选
-<img src="/img/CDH-k3.png" alt="CDH"></li>
-<li>KDCserver和KDC admin server选择自己的KDC安装机器hostname
-<img src="/img/CDH-k4.png" alt="CDH"></li>
-<li>不勾选
-<img src="/img/CDH-k5.png" alt="CDH"></li>
-<li>填写上面11步设置的用户和密码即可，然后一路确认。s
-<img src="/img/CDH-k6.png" alt="CDH"></li>
-<li>完成之后Kerberos会创建CDH相关用户，使用命令查看当前的所有kerberos用户，不过这些自动创建的用户不知道如何登陆，因为没有密码。
-<img src="/img/user_list.png" alt="CDH"></li>
-</ul>
+<p>全部勾选
+<img src="/img/CDH-k3.png" alt="CDH">
+KDCserver和KDC admin server选择自己的KDC安装机器hostname
+<img src="/img/CDH-k4.png" alt="CDH">
+不勾选
+<img src="/img/CDH-k5.png" alt="CDH">
+填写上面11步设置的用户和密码即可，然后一路确认。s
+<img src="/img/CDH-k6.png" alt="CDH">
+完成之后Kerberos会创建CDH相关用户，使用命令查看当前的所有kerberos用户，不过这些自动创建的用户不知道如何登陆，因为没有密码(后来发现要用不用角色的keytab登陆）
+<img src="/img/user_list.png" alt="CDH"></p>
 <h2 id="a-namefenced-code-blockkerberosa-1"><!-- raw HTML omitted -->三.kerberos的使用<!-- raw HTML omitted --></h2>
 <p>创建user1测试用户，执行Hive和MapReduce任务，需要在集群所有节点创建user1用户</p>
 <p><strong>1.使用kadmin创建一个user1的principal</strong></p>
@@ -1267,21 +1265,8 @@ systemctl start kadmin
 
     <footer id="footer" class="footer">
       <div class="social-links">
-      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
-      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
-      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
-      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
-      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
-      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
-      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
-      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
-      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
-      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
-      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
-      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
-      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
-      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
-      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+      <a href="me@eric7.site" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/Eric0720" class="iconfont icon-github" title="github"></a>
   <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
 </div>
 
