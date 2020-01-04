@@ -1,2 +1,2 @@
 User-agent: *
-Sitemap: http://blog.eric7.site/sitemap.xml
+Sitemap: http://localhost:1313/sitemap.xml

@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>sentry on Eric&#39;s blog - A super concise theme for Hugo</title>
-    <link>http://blog.eric7.site/tags/sentry/</link>
+    <link>http://localhost:1313/tags/sentry/</link>
     <description>Recent content in sentry on Eric&#39;s blog - A super concise theme for Hugo</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Thu, 02 Jan 2020 21:33:20 +0800</lastBuildDate>
     
-	<atom:link href="http://blog.eric7.site/tags/sentry/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://localhost:1313/tags/sentry/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>CDH6.3.1使用sentry权限管理</title>
-      <link>http://blog.eric7.site/2020/01/02/cdh6-3-1%E5%BC%80%E5%90%AFsentry/</link>
+      <link>http://localhost:1313/2020/01/02/cdh6-3-1%E5%BC%80%E5%90%AFsentry/</link>
       <pubDate>Thu, 02 Jan 2020 21:33:20 +0800</pubDate>
       
-      <guid>http://blog.eric7.site/2020/01/02/cdh6-3-1%E5%BC%80%E5%90%AFsentry/</guid>
+      <guid>http://localhost:1313/2020/01/02/cdh6-3-1%E5%BC%80%E5%90%AFsentry/</guid>
       <description>环境：CDH6.3.1,Centos7.5 上一篇记录的是kerberos。是用来管理用户身份*即用户身份认证 Sentry，用户身份和权限的映</description>
     </item>
     
