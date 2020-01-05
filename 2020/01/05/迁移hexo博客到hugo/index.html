@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="Eric" /><meta name="description" content="###后续更新" /><meta name="keywords" content="Hugo, theme, even" />
+<meta name="author" content="Eric" /><meta name="description" content="之前的博客生成是用的hexo，但是慢慢的随着博客增多速度 越来越慢,一些功能无法实现，比如图片预览的fancybox。 偶然看到了文章介绍hug" /><meta name="keywords" content="Hugo, theme, even" />
 
 
 
@@ -39,22 +39,22 @@
 
 
 <meta property="og:title" content="迁移hexo博客到hugo" />
-<meta property="og:description" content="###后续更新" />
+<meta property="og:description" content="之前的博客生成是用的hexo，但是慢慢的随着博客增多速度 越来越慢,一些功能无法实现，比如图片预览的fancybox。 偶然看到了文章介绍hug" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://blog.eric7.site/2020/01/05/%E8%BF%81%E7%A7%BBhexo%E5%8D%9A%E5%AE%A2%E5%88%B0hugo/" />
 <meta property="article:published_time" content="2020-01-05T00:52:09+08:00" />
 <meta property="article:modified_time" content="2020-01-05T00:52:09+08:00" />
 <meta itemprop="name" content="迁移hexo博客到hugo">
-<meta itemprop="description" content="###后续更新">
+<meta itemprop="description" content="之前的博客生成是用的hexo，但是慢慢的随着博客增多速度 越来越慢,一些功能无法实现，比如图片预览的fancybox。 偶然看到了文章介绍hug">
 <meta itemprop="datePublished" content="2020-01-05T00:52:09&#43;08:00" />
 <meta itemprop="dateModified" content="2020-01-05T00:52:09&#43;08:00" />
-<meta itemprop="wordCount" content="7">
+<meta itemprop="wordCount" content="2424">
 
 
 
 <meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="迁移hexo博客到hugo"/>
-<meta name="twitter:description" content="###后续更新"/>
+<meta name="twitter:description" content="之前的博客生成是用的hexo，但是慢慢的随着博客增多速度 越来越慢,一些功能无法实现，比如图片预览的fancybox。 偶然看到了文章介绍hug"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -120,10 +120,10 @@
       <h1 class="post-title">迁移hexo博客到hugo</h1>
 
       <div class="post-meta">
-        <span class="post-time"> 2020-01-05 15:00 </span>
+        <span class="post-time"> 2020-01-05 </span>
         
-          <span class="more-meta"> 7 words </span>
-          <span class="more-meta"> 1 min read </span>
+          <span class="more-meta"> 2424 words </span>
+          <span class="more-meta"> 5 mins read </span>
         <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> times read </span>
       </div>
     </header>
@@ -131,11 +131,314 @@
     <div class="post-toc" id="post-toc">
   <h2 class="post-toc-title">Contents</h2>
   <div class="post-toc-content always-active">
-    <nav id="TableOfContents"></nav>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#a-namefenced-code-blockhugo-a">一.Hugo 安装与配置</a></li>
+    <li><a href="#a-namefenced-code-blockhexoa">二.迁移hexo中之前的博客</a></li>
+    <li><a href="#a-namefenced-code-blockgithuba">三.部署到github</a></li>
+    <li><a href="#a-namefenced-code-blocka">四.总结与问题</a></li>
+  </ul>
+</nav>
   </div>
 </div>
     <div class="post-content">
-      <p>###后续更新</p>
+      <pre><code>之前的博客生成是用的hexo，但是慢慢的随着博客增多速度 越来越慢,一些功能无法实现，比如图片预览的fancybox。
+偶然看到了文章介绍hugo，一个用golang编写的静态网站生成器 ，主题很多,号称世界上最快的框架，
+实际用起来也比hexo快的多，几十个页面生成速度毫秒级别，网站的访问速度从未有的顺畅，速度起码翻倍。
+</code></pre>
+<p><a href="https://themes.gohugo.io">主题地址</a></p>
+<p><img src="/img/hugo2.png" alt="hugo1"></p>
+<h2 id="a-namefenced-code-blockhugo-a"><!-- raw HTML omitted -->一.Hugo 安装与配置<!-- raw HTML omitted --></h2>
+<p>Hugo 安装比较简单，但是配置过程中遇到了几个小问题😂</p>
+<p>1.首先安装 Hugo，在不同系统上安装都很简单，在 Mac 上，使用 Homebrew 安装 Hugo：
+<code>brew install hugo</code> 等待安装即可</p>
+<p>2.建立博客站点
+安装以后，首先我们需要建立一个博客目录，下面存放的是博客的所有配置以及博文等资料，例如要建立一个名为 Blog 的站点，使用下面的命令：<code>hugo new site Blog</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Congratulations! Your new Hugo site is created in /Users/jdhao/Blog.
+Just a few more steps and you&#39;re ready to go:
+	1. Download a theme into the same-named folder. Choose a theme from https://themes.gohugo.io/, or create your own with the “hugo new theme ” command.
+	2. Perhaps you want to add some content. You can add single files with “hugo new /.”.
+	3. Start the built-in live server via “hugo server”.
+Visit https://gohugo.io/ for quickstart guide and full documentation.
+</code></pre></td></tr></table>
+</div>
+</div><p>建立站点以后，博客根目录下默认有这些文件和子目录：
+<code>archetypes/  config.toml  content/     data/        layouts/     static/      themes/</code></p>
+<p><code>config.toml</code> 就是博客的配置文件，archetypes 目录下有一个 default.md，存放的是建立新博文时候默认使用的模板，可以根据自己需求修改。content 目录用来存放博文，static 可以存放一些自己的文件，themes 文件夹用于存放不同的主题。</p>
+<p>在博客根目录下，使用以下命令安装 even 主题：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">git initgit submodule add https://github.com/olOwOlo/hugo-theme-even.git themes/even
+</code></pre></td></tr></table>
+</div>
+</div><p>3.命令创建测试博客
+<code>hugo new post/test.md</code></p>
+<p>这个命令会在 content 目录下建立 post 目录，并在 post 下生成 test.md 文件，博文书写就在这个文件里使用 Markdown 语法完成。</p>
+<p>4.<code>Hugo server</code> 本地启动博客查看效果。</p>
+<p>这时候报了错误。根据提示一，需要在安装完主题之后，要把主题的配置文件复制到 Blog根目录下，具体参考 <a href="https://github.com/olOwOlo/hugo-theme-even/blob/master/README-zh.md#installation">https://github.com/olOwOlo/hugo-theme-even/blob/master/README-zh.md#installation</a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  Blog git:(master) ✗ hugo server -D
+Building sites … ERROR 2020/01/04 15:08:40
+
+There are two possible situations that led to this error:
+  1. You haven&#39;t copied the config.toml yet. See https://github.com/olOwOlo/hugo-theme-even#installation
+  2. You have an incompatible update. See https://github.com/olOwOlo/hugo-theme-even/blob/master/CHANGELOG.md#400-2018-11-06
+
+有两种可能的情况会导致这个错误发生:
+  1. 你还没有复制 config.toml 参考 https://github.com/olOwOlo/hugo-theme-even/blob/master/README-zh.md#installation
+  2. 你进行了一次不兼容的更新 参考 https://github.com/olOwOlo/hugo-theme-even/blob/master/CHANGELOG.md#400-2018-11-06
+</code></pre></td></tr></table>
+</div>
+</div><p>重点: 在主题的 exampleSite 目录下有一个 config.toml 文件，将这个 config.toml 文件复制到你的站点目录下，根据自己的需求更改即可。还需要设置文章的 permalinks 设置Hexo 中，文章的链接都是 YYYY/MM/DD/post_name/ 的格式，在 Hugo 中，可以通过设置 permalinks 参数来实现平滑过渡，在 config.toml 中加入以下设置：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">[permalinks]  post = &#34;/:year/:month/:day/:filename/&#34;
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="a-namefenced-code-blockhexoa"><!-- raw HTML omitted -->二.迁移hexo中之前的博客<!-- raw HTML omitted --></h2>
+<p>只需要将之前hexo博客中下/source/_posts/目录下的.md文件拷贝到Blog/content/post/下即可。</p>
+<p>这里需要注意两点</p>
+<p>1.hexo和hugo的front matter格式不同，tag,date,categories,需要手动更改之前的文件。使用工具全局替换。</p>
+<p>时间格式
+Hexo 中时间格式与 Hugo 格式不太相同，Hugo 对时间格式的要求比较严格，Hexo 中YYYY-MM-DD HH:MM格式的时间在 Hugo 中无法被正确识别。Hugo 中使用的时间格式如下：
+YYYY-MM-DD HH:MM:SS +0800
+最后的 +0800 代表中国的时区是GMT+8。
+另外，Hexo 中 front matter 代表博客更新时间的 updated 选项在 Hugo 中是 lastmod。
+具体时间格式的替换，我采用 Sublime Text 配合正则表达式匹配来替换。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Front-matter 的区别
+hexo的时间格式
+date: 2020-01-04 15:00:29
+tag: Mac
+categories: Mac, Linux
+hugo中的时间格式
+date: 2020-01-04T15:00:29+08:00
+tag:[Mac]
+categories: [Mac, Linux]
+</code></pre></td></tr></table>
+</div>
+</div><p>2.博文的 front matter 里draft 选项默认为 true，需要改为 false 才能发表博文，建议直接更改上面说的archetypes 目录下的 default 文件，把 draft: true 改为 draft: false，这样生成的博文就是默认可以发表的</p>
+<p>3.个人文件的位置</p>
+<p>如果博客中有图片，建议把文件放在博客根目录下的 static 目录，可以在该目录下建立名为 files 的目录，然后把文件放在 files 目录下。假如 files 目录下有一个文件 test.JPG，参考这里，在博客中引用它的正确方式是:</p>
+<p><a href="/img/test.JPG">点击这里下载 test.JPG</a></p>
+<p>然后命令运行,Hugo server 查看效果。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  Blog git:(master) ✗ hugo server
+
+                   | EN
++------------------+----+
+  Pages            | 37
+  Paginator pages  |  4
+  Non-page files   |  0
+  Static files     | 40
+  Processed images |  0
+  Aliases          |  9
+  Sitemaps         |  1
+  Cleaned          |  0
+
+Built in 38 ms
+Watching for changes in /Users/seven/Blog/{archetypes,content,data,layouts,static,themes}
+Watching for config changes in /Users/seven/Blog/config.toml
+Environment: &#34;development&#34;
+Serving pages from memory
+Running in Fast Render Mode. For full rebuilds on change: hugo server --disableFastRender
+Web Server is available at http://localhost:1313/ (bind address 127.0.0.1)
+Press Ctrl+C to stop
+</code></pre></td></tr></table>
+</div>
+</div><p>37个页面，生成速度，才38ms。</p>
+<h2 id="a-namefenced-code-blockgithuba"><!-- raw HTML omitted -->三.部署到github<!-- raw HTML omitted --></h2>
+<p>之前已经部署过对应的xxxx.github.io的github仓库，运行以下命令，将之前的仓库清空。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">mkdir public
+cd public
+git init
+git remote add upstream https://github.com/jdhao/jdhao.github.io.git
+</code></pre></td></tr></table>
+</div>
+</div><p>执行 hugo -t even，hugo 会生成 blog 内容，放到 public 目录。然后，我们把 public 下面的内容 push 到 github 即可。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">git add .
+git commit -m  &#34;hugo commit&#34;
+git push -f upstream master # 第一次 push 必须使用 -f，因为此时远程仓库非空，和本地有冲突
+
+</code></pre></td></tr></table>
+</div>
+</div><p>这样就部署成功了，一般等待几分钟，访问自己的博客，就能看到更新以后的内容。</p>
+<p>然后参考官方文档,写bash脚本方便每次统一部署。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">!/bin/bash
+
+echo -e &#34;\033[0;32mDeploying updates to GitHub...\033[0m&#34;
+
+# Build the project.
+hugo # if using a theme, replace with `hugo -t &lt;YOURTHEME&gt;`
+
+# Go To Public folder
+cd public
+
+git init
+git remote add origin git@github.com:xxx/xxx.github.io.git #修改github名字
+# Add changes to git.
+git add .
+
+# Commit changes.
+msg=&#34;rebuilding site `date`&#34;
+if [ $# -eq 1 ]
+  then msg=&#34;$1&#34;
+fi
+git commit -m &#34;$msg&#34;
+
+# Push source and build repos.
+git push origin master
+
+# Come Back up to the Project Root
+cd ..
+</code></pre></td></tr></table>
+</div>
+</div><p>赋予 deploy.sh 文件执行权限：</p>
+<p>chmod u+x deploy.sh
+以后执行 ./deploy.sh 就可以部署博客到 github 了。</p>
+<p>注：第一次 push 需要使用 -f，以后 push 就不需要该参数了，force push 以后，github 仓库的 commit 数量会清零，原有的 commit 信息会丢失</p>
+<h2 id="a-namefenced-code-blocka"><!-- raw HTML omitted -->四.总结与问题<!-- raw HTML omitted --></h2>
+<p>用hugo最直观的感受是，毫秒级的页面生成。主题多，集成度高（集成了阅读时间，字数统计，图片预览）,文件的统一管理，之前一直在找图片点击放大的插件，之前的主题不支持，这次好，给集成了。配置也方便，一个config.toml配置搞定所有。</p>
+<p><strong>报错生成页面错误：</strong>
+1，原因是front matter不符合规范 <code>render of &quot;page&quot; failed</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  Blog git:(master) ✗ hugo server
+ERROR 2020/01/04 15:40:34 render of &#34;page&#34; failed: execute of template failed: template: post/single.html:14:5: executing &#34;post/single.html&#34; at &lt;partial &#34;head.html&#34; .&gt;: error calling partial: &#34;/Users/seven/Blog/themes/even/layouts/partials/head.html:22:82&#34;: execute of template failed: template: _internal/schema.html:22:82: executing &#34;_internal/schema.html&#34; at &lt;.Params.tags&gt;: range can&#39;t iterate over CDH
+ERROR 2020/01/04 15:40:34 render of &#34;page&#34; failed: execute of template failed: template: post/single.html:14:5: executing &#34;post/single.html&#34; at &lt;partial &#34;head.html&#34; .&gt;: error calling partial: &#34;/Users/seven/Blog/themes/even/layouts/partials/head.html:22:82&#34;: execute of template failed: template: _internal/schema.html:22:82: executing &#34;_internal/schema.html&#34; at &lt;.Params.tags&gt;: range can&#39;t iterate over flume
+ERROR 2020/01/04 15:40:34 render of &#34;page&#34; failed: execute of template failed: template: post/single.html:14:5: executing &#34;post/single.html&#34; at &lt;partial &#34;head.html&#34; .&gt;: error calling partial: &#34;/Users/seven/Blog/themes/even/layouts/partials/head.html:22:82&#34;: execute of template failed: template: _internal/schema.html:22:82: executing &#34;_internal/schema.html&#34; at &lt;.Params.tags&gt;: range can&#39;t iterate over 123456
+Built in 26 ms
+Error: Error building site: failed to render pages: render of &#34;page&#34; failed: execute of template failed: template: post/single.html:14:5: executing &#34;post/single.html&#34; at &lt;partial &#34;head.html&#34; .&gt;: error calling partial: &#34;/Users/seven/Blog/themes/even/layouts/partials/head.html:22:82&#34;: execute of template failed: template: _internal/schema.html:22:82: executing &#34;_internal/schema.html&#34; at &lt;.Params.tags&gt;: range can&#39;t iterate over CDH,sentry
+
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>参考资料</strong></p>
+<ul>
+<li><a href="https://gohugo.io/documentation/">https://gohugo.io/documentation/</a></li>
+<li><a href="http://scarletsky.github.io/2019/05/02/migrate-hexo-to-hugo/">http://scarletsky.github.io/2019/05/02/migrate-hexo-to-hugo/</a></li>
+<li><a href="https://jdhao.github.io/2018/10/10/hexo_to_hugo/">https://jdhao.github.io/2018/10/10/hexo_to_hugo/</a></li>
+</ul>
 
     </div>
 
@@ -147,17 +450,24 @@
   <p class="copyright-item">
     <span class="item-title">LastMod</span>
     <span class="item-content">
-        2020-01-05 15:00
+        2020-01-05
         
     </span>
   </p>
   
-  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
 </div>
 <footer class="post-footer">
       
       <nav class="post-nav">
-        
+        <a class="prev" href="/2020/01/05/comment/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Comment</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
         <a class="next" href="/2020/01/04/test/">
             <span class="next-text nav-default">Hugo Test</span>
             <span class="next-text nav-mobile">Next</span>
