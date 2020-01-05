@@ -48,11 +48,11 @@
 <meta itemprop="description" content="之前的博客生成是用的hexo，但是慢慢的随着博客增多速度 越来越慢,一些功能无法实现，比如图片预览的fancybox。 偶然看到了文章介绍hug">
 <meta itemprop="datePublished" content="2020-01-05T00:52:09&#43;08:00" />
 <meta itemprop="dateModified" content="2020-01-05T00:52:09&#43;08:00" />
-<meta itemprop="wordCount" content="2424">
+<meta itemprop="wordCount" content="2482">
 
 
 
-<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="hugo," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="迁移hexo博客到hugo"/>
 <meta name="twitter:description" content="之前的博客生成是用的hexo，但是慢慢的随着博客增多速度 越来越慢,一些功能无法实现，比如图片预览的fancybox。 偶然看到了文章介绍hug"/>
 
@@ -122,7 +122,7 @@
       <div class="post-meta">
         <span class="post-time"> 2020-01-05 </span>
         
-          <span class="more-meta"> 2424 words </span>
+          <span class="more-meta"> 2482 words </span>
           <span class="more-meta"> 5 mins read </span>
         <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> times read </span>
       </div>
@@ -254,8 +254,8 @@ tag: Mac
 categories: Mac, Linux
 hugo中的时间格式
 date: 2020-01-04T15:00:29+08:00
-tag:[Mac]
-categories: [Mac, Linux]
+tag: [Mac]。     #[]前面要有空格
+categories: [Mac, Linux]    #[]前面要有空格
 </code></pre></td></tr></table>
 </div>
 </div><p>2.博文的 front matter 里draft 选项默认为 true，需要改为 false 才能发表博文，建议直接更改上面说的archetypes 目录下的 default 文件，把 draft: true 改为 draft: false，这样生成的博文就是默认可以发表的</p>
@@ -433,7 +433,9 @@ Error: Error building site: failed to render pages: render of &#34;page&#34; fai
 
 </code></pre></td></tr></table>
 </div>
-</div><p><strong>参考资料</strong></p>
+</div><p>2.Front matter tag:[],中括号前面没有空格导致错误</p>
+<p><code>failed to unmarshal YAML: yaml: line 5: could not find expected ':'</code></p>
+<p><strong>参考资料</strong></p>
 <ul>
 <li><a href="https://gohugo.io/documentation/">https://gohugo.io/documentation/</a></li>
 <li><a href="http://scarletsky.github.io/2019/05/02/migrate-hexo-to-hugo/">http://scarletsky.github.io/2019/05/02/migrate-hexo-to-hugo/</a></li>
@@ -461,11 +463,13 @@ Error: Error building site: failed to render pages: render of &#34;page&#34; fai
   </p>
 </div>
 <footer class="post-footer">
-      
+      <div class="post-tags">
+          <a href="/tags/hugo/">hugo</a>
+          </div>
       <nav class="post-nav">
         <a class="prev" href="/2020/01/05/comment/">
             <i class="iconfont icon-left"></i>
-            <span class="prev-text nav-default">Comment</span>
+            <span class="prev-text nav-default">hugo添加utterances评论功能</span>
             <span class="prev-text nav-mobile">Prev</span>
           </a>
         <a class="next" href="/2020/01/04/test/">

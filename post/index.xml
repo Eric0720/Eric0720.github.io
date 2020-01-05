@@ -12,12 +12,12 @@
     
     
     <item>
-      <title>Comment</title>
+      <title>hugo添加utterances评论功能</title>
       <link>http://blog.eric7.site/2020/01/05/comment/</link>
       <pubDate>Sun, 05 Jan 2020 21:05:09 +0800</pubDate>
       
       <guid>http://blog.eric7.site/2020/01/05/comment/</guid>
-      <description>blog-comment 更换了评论功能 Utterances https://www.dazhuanlan.com/2019/12/05/5de8934e6f081/ https://linkscue.com/tags/utterances/</description>
+      <description>之前使用hexo的时候，评论功能使用的是韩国的LiveRe.使用简单，但缺点是加载慢，后台访问不稳定。 趁这次迁移到hugo,正好换了评论功能</description>
     </item>
     
     <item>
