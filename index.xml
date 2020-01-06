@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Eric&#39;s blog - A super concise theme for Hugo</title>
+    <title>Eric&#39;s blog - xxxx</title>
     <link>http://blog.eric7.site/</link>
-    <description>Recent content on Eric&#39;s blog - A super concise theme for Hugo</description>
+    <description>Recent content on Eric&#39;s blog - xxxx</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Sun, 05 Jan 2020 21:05:09 +0800</lastBuildDate>
@@ -48,7 +48,7 @@
     </item>
     
     <item>
-      <title>CDH6.3.1使用sentry权限管理</title>
+      <title>CDH6.3.1使用sentry权限控制</title>
       <link>http://blog.eric7.site/2020/01/02/cdh6-3-1%E5%BC%80%E5%90%AFsentry/</link>
       <pubDate>Thu, 02 Jan 2020 21:33:20 +0800</pubDate>
       
@@ -57,7 +57,7 @@
     </item>
     
     <item>
-      <title>CDH6.3.1开启kerberos</title>
+      <title>CDH6.3.1开启kerberos认证</title>
       <link>http://blog.eric7.site/2019/12/30/cdh6-3-1%E5%BC%80%E5%90%AFkerberos/</link>
       <pubDate>Mon, 30 Dec 2019 23:12:45 +0800</pubDate>
       
