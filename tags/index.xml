@@ -6,10 +6,19 @@
     <description>Recent content in Tags on Eric&#39;s blog - Eric博客|Eric liu -大数据学习，大数据分享</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 05 Jan 2020 00:52:09 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 23 Feb 2020 19:07:14 +0800</lastBuildDate>
     
 	<atom:link href="http://blog.eric7.site/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>superset</title>
+      <link>http://blog.eric7.site/tags/superset/</link>
+      <pubDate>Sun, 23 Feb 2020 19:07:14 +0800</pubDate>
+      
+      <guid>http://blog.eric7.site/tags/superset/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>hugo</title>

@@ -3,7 +3,35 @@
   
   <url>
     <loc>http://blog.eric7.site/</loc>
-    <lastmod>2020-01-05T21:05:09+08:00</lastmod>
+    <lastmod>2020-02-23T19:07:14+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>http://blog.eric7.site/post/</loc>
+    <lastmod>2020-02-23T19:07:14+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>http://blog.eric7.site/tags/superset/</loc>
+    <lastmod>2020-02-23T19:07:14+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>http://blog.eric7.site/2020/02/23/superset/</loc>
+    <lastmod>2020-02-23T19:07:14+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>http://blog.eric7.site/tags/</loc>
+    <lastmod>2020-02-23T19:07:14+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -16,21 +44,7 @@
   </url>
   
   <url>
-    <loc>http://blog.eric7.site/post/</loc>
-    <lastmod>2020-01-05T21:05:09+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>http://blog.eric7.site/tags/hugo/</loc>
-    <lastmod>2020-01-05T00:52:09+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>http://blog.eric7.site/tags/</loc>
     <lastmod>2020-01-05T00:52:09+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -181,6 +195,11 @@
     <lastmod>2018-04-27T10:07:24+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>http://blog.eric7.site/1/01/01/superset1/</loc>
+    <priority>0</priority>
   </url>
   
   <url>

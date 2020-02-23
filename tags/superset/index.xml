@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>superset on Eric&#39;s blog - Eric博客|Eric liu -大数据学习，大数据分享</title>
+    <link>http://blog.eric7.site/tags/superset/</link>
+    <description>Recent content in superset on Eric&#39;s blog - Eric博客|Eric liu -大数据学习，大数据分享</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sun, 23 Feb 2020 19:07:14 +0800</lastBuildDate>
+    
+	<atom:link href="http://blog.eric7.site/tags/superset/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>superset 源码安装/pip安装&#43;superset二次开发环境搭建</title>
+      <link>http://blog.eric7.site/2020/02/23/superset/</link>
+      <pubDate>Sun, 23 Feb 2020 19:07:14 +0800</pubDate>
+      
+      <guid>http://blog.eric7.site/2020/02/23/superset/</guid>
+      <description>环境： mac 10.15 Catalina + Anaconda 3 + Python3.7 + superset 0.30 Superset 是一款由 Airbnb 开源的“现代化的企业级 BI（商业智能） Web 应用程序”，其通过创建和分享 dashboard，为数据分析提</description>
+    </item>
+    
+  </channel>
+</rss>
