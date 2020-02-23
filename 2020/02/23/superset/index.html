@@ -48,7 +48,7 @@
 <meta itemprop="description" content="环境： mac 10.15 Catalina &#43; Anaconda 3 &#43; Python3.7 &#43; superset 0.30 Superset 是一款由 Airbnb 开源的“现代化的企业级 BI（商业智能） Web 应用程序”，其通过创建和分享 dashboard，为数据分析提">
 <meta itemprop="datePublished" content="2020-02-23T19:07:14&#43;08:00" />
 <meta itemprop="dateModified" content="2020-02-23T19:07:14&#43;08:00" />
-<meta itemprop="wordCount" content="2201">
+<meta itemprop="wordCount" content="2204">
 
 
 
@@ -122,7 +122,7 @@
       <div class="post-meta">
         <span class="post-time"> 2020-02-23 </span>
         
-          <span class="more-meta"> 2201 words </span>
+          <span class="more-meta"> 2204 words </span>
           <span class="more-meta"> 5 mins read </span>
         <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> times read </span>
       </div>
@@ -147,9 +147,9 @@
 <p><img src="https://superset.incubator.apache.org/_images/s.png" alt="superset"></p>
 <pre><code> Superset 是一款由 Airbnb 开源的“现代化的企业级 BI（商业智能） Web 应用程序”，其通过创建和分享 dashboard，为数据分析提供了轻量级的数据查询和可视化方案。
  Superset 的前端主要用到了 React 和 NVD3/D3，而后端则基于 Python 的 Flask 框架和 Pandas、SQLAlchemy 等依赖库，主要提供了这几方面的功能：
-集成数据查询功能，支持多种数据库，包括 MySQL、PostgresSQL、Oracle、SQL Server、SQLite、SparkSQL 等，并深度支持 Druid。
-通过 NVD3/D3 预定义了多种可视化图表，满足大部分的数据展示功能。如果还有其他需求，也可以自开发更多的图表类型，或者嵌入其他的 JavaScript 图表库（如 HighCharts、ECharts）。
-提供细粒度安全模型，可以在功能层面和数据层面进行访问控制。支持多种鉴权方式（如数据库、OpenID、LDAP、OAuth、REMOTE_USER 等）。
+ 集成数据查询功能，支持多种数据库，包括 MySQL、PostgresSQL、Oracle、SQL Server、SQLite、SparkSQL 等，并深度支持 Druid。
+ 通过 NVD3/D3 预定义了多种可视化图表，满足大部分的数据展示功能。如果还有其他需求，也可以自开发更多的图表类型，或者嵌入其他的 JavaScript 图表库（如 HighCharts、ECharts）。
+ 提供细粒度安全模型，可以在功能层面和数据层面进行访问控制。支持多种鉴权方式（如数据库、OpenID、LDAP、OAuth、REMOTE_USER 等）。
 </code></pre>
 <p>17年装过一次，简单使用了一下，现在又开始使用supeset了。这次记录下问题，和安装步骤
 因为之前安装过，导致残留。不能导入示例数据，不能连接sqlite等一些问题。头疼。</p>
@@ -161,17 +161,24 @@
 <pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-fallback" data-lang="fallback">git clone https://github.com/apache/incubator-superset.git
 
+git tag　列出所有版本号
+
+切换到自己想要的版本 
+
+git checkout　+某版本号
 
 </code></pre></td></tr></table>
 </div>
-</div><p>git tag　列出所有版本号
-切换到自己想要的版本
-git checkout　+某版本号</p>
-<p>2.安装扩展依赖，及开发依赖(这里指定豆瓣源)</p>
+</div><p>2.安装扩展依赖，及开发依赖(这里指定豆瓣源)</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt">1
@@ -269,9 +276,12 @@ superset run -p 8088 --with-threads --reload --debugger
 使用淘宝镜像安装 cnpm install -d
 或
 npm install -d</p>
+<p><img src="/img/superset4.png" alt="hugo1"></p>
 <p>编译前端文件，并进入前端开发者模式
 npm run build
-npm run dev</p>
+<img src="/img/superset5.png" alt="hugo1"></p>
+<p>npm run dev
+<img src="/img/superset5.png" alt="hugo1"></p>
 <p>运行完npm run dev，命令窗口会停止，不要误以为是执行不下去，保持窗口开启状态即可，一有文件变动时，它会重新编译</p>
 <p>13、把项目导入到pyCharm
 File -&gt; New Project -&gt; Location选择incubator-superset所在目录 -&gt; 选择Existing interpreter -&gt; 填写incubator-superset\venv\Scripts\python.exe所在位置</p>
@@ -279,7 +289,8 @@ File -&gt; New Project -&gt; Location选择incubator-superset所在目录 -&gt; 
 在 incubator-superset/superset 目录下新建 run.py，添加如下内容：
 from superset import app
 app.run(debug=True, host='0.0.0.0&rsquo;, port=8088)</p>
-<p>等 pycharm 右下角 processes running 完成后就可以debug run.py了。访问：http://localhost:8088,输入管理员账号跟密码，登录。</p>
+<p>等 pycharm 右下角 processes running 完成后就可以debug run.py了。访问：http://localhost:8088,输入管理员账号跟密码，登录。
+<img src="/img/superset8.png" alt="hugo1"></p>
 <h2 id="a-namefenced-code-blockpipsuperseta"><!-- raw HTML omitted -->二.pip安装superset<!-- raw HTML omitted --></h2>
 <p>Anaconda 创建python环境
 <code>conda create -n superset python=3.7</code>
@@ -537,9 +548,9 @@ superset run -p 8088 --with-threads --reload --debugger
 </code></pre></td></tr></table>
 </div>
 </div><p>然后启动成功。浏览器访问
-superset1</p>
-<p>superset2
-登陆上面创建的管理用户和密码即可</p>
+<img src="/img/superset1.png" alt="hugo1"></p>
+<p>登陆上面创建的管理用户和密码即可
+<img src="/img/superset2.png" alt="hugo1"></p>
 <p>conda pip安装的路径
 /opt/anaconda3/envs/superset/lib/python3.7/site-packages/superset</p>
 <p>问题与总结
