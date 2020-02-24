@@ -198,6 +198,11 @@
   </url>
   
   <url>
+    <loc>http://blog.eric7.site/1/01/01/superset1/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://blog.eric7.site/categories/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>

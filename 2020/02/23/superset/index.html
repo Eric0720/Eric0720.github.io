@@ -48,7 +48,7 @@
 <meta itemprop="description" content="环境： mac 10.15 Catalina &#43; Anaconda 3 &#43; Python3.7 &#43; superset 0.30 Superset 是一款由 Airbnb 开源的“现代化的企业级 BI（商业智能） Web 应用程序”，其通过创建和分享 dashboard，为数据分析提">
 <meta itemprop="datePublished" content="2020-02-23T19:07:14&#43;08:00" />
 <meta itemprop="dateModified" content="2020-02-23T19:07:14&#43;08:00" />
-<meta itemprop="wordCount" content="2512">
+<meta itemprop="wordCount" content="2483">
 
 
 
@@ -122,8 +122,8 @@
       <div class="post-meta">
         <span class="post-time"> 2020-02-23 </span>
         
-          <span class="more-meta"> 2512 words </span>
-          <span class="more-meta"> 6 mins read </span>
+          <span class="more-meta"> 2483 words </span>
+          <span class="more-meta"> 5 mins read </span>
         <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> times read </span>
       </div>
     </header>
@@ -207,7 +207,8 @@ pip install -e .
 
 </code></pre></td></tr></table>
 </div>
-</div><p>4.开始配置superset</p>
+</div><p><img src="/img/superset6.png" alt="superset6"></p>
+<p>4.开始配置superset</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt">1
@@ -228,22 +229,21 @@ flask fab create-admin
 
 </code></pre></td></tr></table>
 </div>
-</div><ul>
+</div><p><img src="/img/superset7.png" alt="superset7"></p>
+<ul>
 <li>以下操作要进入superset/bin目录下</li>
 </ul>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-fallback" data-lang="fallback">#初始化数据库
@@ -255,8 +255,6 @@ python superset init
 #加载示例数据
 python superset load_examples
 
-#debug模式启动，并指定8088端口
-superset run -p 8088 --with-threads --reload --debugger
 </code></pre></td></tr></table>
 </div>
 </div><p>5.安装编译前端文件，并进入前端开发者模式</p>
@@ -273,6 +271,7 @@ superset run -p 8088 --with-threads --reload --debugger
 <li>进入superset/assets目录下,安装编译所需模块,使用淘宝镜像安装</li>
 </ul>
 <p><code>cnpm install -d  或  npm install -d </code></p>
+<p><img src="/img/superset4.png" alt="superset4"></p>
 <ul>
 <li>编译前端文件，并进入前端开发者模式</li>
 </ul>
@@ -286,7 +285,7 @@ superset run -p 8088 --with-threads --reload --debugger
 npm run dev
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="/img/superset5.png" alt="hugo1"></p>
+</div><p><img src="/img/superset5.png" alt="superset5"></p>
 <ul>
 <li>运行完npm run dev，命令窗口会停止，不要误以为是执行不下去，保持窗口开启状态即可，一有文件变动时，它会重新编译</li>
 </ul>
@@ -305,7 +304,7 @@ app.run(debug=True, host=&#39;0.0.0.0&#39;, port=8088)
 </code></pre></td></tr></table>
 </div>
 </div><p>等 pycharm 右下角 processes running 完成后就可以debug run.py了。访问：http://localhost:8088,输入管理员账号跟密码，登录。
-<img src="/img/superset8.png" alt="hugo1"></p>
+<img src="/img/superset8.png" alt="superset8"></p>
 <h2 id="a-namefenced-code-blockpipsuperseta"><!-- raw HTML omitted -->二.pip安装superset<!-- raw HTML omitted --></h2>
 <p>1.Anaconda 创建python环境
 <code>conda create -n superset python=3.7</code></p>
@@ -558,7 +557,8 @@ superset run -p 8088 --with-threads --reload --debugger
 </div><p>然后启动成功。浏览器访问
 <img src="/img/superset1.png" alt="hugo1"></p>
 <p>登陆上面创建的管理用户和密码即可
-<img src="/img/superset2.png" alt="hugo1"></p>
+<img src="/img/superset2.png" alt="superset2"></p>
+<p><img src="/img/superset12.png" alt="superset12"></p>
 <h2 id="a-namefenced-code-blocka"><!-- raw HTML omitted -->三.问题与总结<!-- raw HTML omitted --></h2>
 <p>记录：conda pip安装的路径
 /opt/anaconda3/envs/superset/lib/python3.7/site-packages/superset</p>

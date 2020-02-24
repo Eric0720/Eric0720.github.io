@@ -164,5 +164,19 @@
       <description>随便写写。</description>
     </item>
     
+    <item>
+      <title></title>
+      <link>http://blog.eric7.site/1/01/01/superset1/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://blog.eric7.site/1/01/01/superset1/</guid>
+      <description>git clone 下载源码
+git tag　列出所有版本号
+git checkout　+某版本号
+https://github.com/apache/incubator-superset.git
+修改superset/config.py 搜superset.db 更改文件名。 (incubator-superset) ➜ incubator-superset git:(270fd32a) flask fab create-admin Username [admin]: admin User first name [admin]: User last name [user]: Email [admin@fab.org]: admin@superset.com Password: Repeat for confirmation:
+2020-02-21 18:16:07,701:INFO:root:Configured event logger of type &amp;lt;class &amp;lsquo;superset.utils.log.DBEventLogger&#39;&amp;gt; Recognized Database Authentications. 2020-02-21 18:16:08,948:ERROR:flask_appbuilder.security.sqla.manager:Error adding new user to database. (sqlite3.IntegrityError) UNIQUE constraint failed: ab_user.email [SQL: INSERT INTO ab_user (first_name, last_name, username, password, active, email, last_login, login_count, fail_login_count, created_on, changed_on, created_by_fk, changed_by_fk) VALUES (?</description>
+    </item>
+    
   </channel>
 </rss>
