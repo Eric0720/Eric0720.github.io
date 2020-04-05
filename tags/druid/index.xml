@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>druid on Eric&#39;s blog - Eric博客|Eric liu -大数据学习，大数据分享</title>
+    <link>http://blog.eric7.site/tags/druid/</link>
+    <description>Recent content in druid on Eric&#39;s blog - Eric博客|Eric liu -大数据学习，大数据分享</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sun, 05 Apr 2020 19:58:51 +0800</lastBuildDate>
+    
+	<atom:link href="http://blog.eric7.site/tags/druid/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Druid添加扩展S3数据源</title>
+      <link>http://blog.eric7.site/2020/04/05/druid/</link>
+      <pubDate>Sun, 05 Apr 2020 19:58:51 +0800</pubDate>
+      
+      <guid>http://blog.eric7.site/2020/04/05/druid/</guid>
+      <description>最近接触aws比较多，然后研究了下实时数仓druid/kylin的部分，数据是存在s3桶中，driud连接s3的文章介绍不多，只有官方有一点</description>
+    </item>
+    
+  </channel>
+</rss>

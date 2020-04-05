@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Druid添加扩展S3数据源 - Eric&#39;s blog - Eric博客|Eric liu -大数据学习，大数据分享</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Eric" /><meta name="description" content="最近接触aws比较多，然后研究了下实时数仓druid/kylin的部分，数据是存在s3桶中，driud连接s3的文章介绍不多，只有官方有一点" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.62.1 with theme even" />
+
+
+<link rel="canonical" href="http://blog.eric7.site/2020/04/05/druid/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Druid添加扩展S3数据源" />
+<meta property="og:description" content="最近接触aws比较多，然后研究了下实时数仓druid/kylin的部分，数据是存在s3桶中，driud连接s3的文章介绍不多，只有官方有一点" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://blog.eric7.site/2020/04/05/druid/" />
+<meta property="article:published_time" content="2020-04-05T19:58:51+08:00" />
+<meta property="article:modified_time" content="2020-04-05T19:58:51+08:00" />
+<meta itemprop="name" content="Druid添加扩展S3数据源">
+<meta itemprop="description" content="最近接触aws比较多，然后研究了下实时数仓druid/kylin的部分，数据是存在s3桶中，driud连接s3的文章介绍不多，只有官方有一点">
+<meta itemprop="datePublished" content="2020-04-05T19:58:51&#43;08:00" />
+<meta itemprop="dateModified" content="2020-04-05T19:58:51&#43;08:00" />
+<meta itemprop="wordCount" content="737">
+
+
+
+<meta itemprop="keywords" content="druid,s3," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Druid添加扩展S3数据源"/>
+<meta name="twitter:description" content="最近接触aws比较多，然后研究了下实时数仓druid/kylin的部分，数据是存在s3桶中，driud连接s3的文章介绍不多，只有官方有一点"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Eric&#39;s blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Eric&#39;s blog</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Druid添加扩展S3数据源</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-04-05 </span>
+        
+          <span class="more-meta"> 737 words </span>
+          <span class="more-meta"> 2 mins read </span>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> times read </span>
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#a-namefenced-code-block1-druids3-a">1. 首先需要在druid添加s3的扩展 </a></li>
+    <li><a href="#a-namefenced-code-block2awsa">2.设置AWS凭证</a></li>
+    <li><a href="#a-namefenced-code-block3awsa">3.设置AWS区域</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p><img src="/img/druid.png" alt="IMG"></p>
+<blockquote>
+<p>最近接触aws比较多，然后研究了下实时数仓druid/kylin的部分，数据是存在s3桶中，driud连接s3的文章介绍不多，只有官方有一点点介绍，不详细，这里记录下。druid的扩展很多，有一部分是官方维护，一部分是社区维护，也可以自己定制自己的扩展
+具体的列表见：<a href="https://druid.apache.org/docs/latest/development/extensions.html">https://druid.apache.org/docs/latest/development/extensions.html</a></p>
+</blockquote>
+<h2 id="a-namefenced-code-block1-druids3-a"><!-- raw HTML omitted -->1. 首先需要在druid添加s3的扩展 <!-- raw HTML omitted --></h2>
+<ul>
+<li>
+<p>根据自己的启动方式，选择该目录下的配置文件，我是用micro-quickstart模式启动的，配置文件目录如下:</p>
+<p><code>apache-druid-0.17.0/conf/druid/single-server/micro-quickstart/_common/common.runtime.properties</code></p>
+</li>
+<li>
+<p>在27行添加 druid-s3-extensions：</p>
+<p><code>druid.extensions.loadList=[&quot;druid-hdfs-storage&quot;, &quot;druid-kafka-indexing-service&quot;, &quot;druid-datasketches&quot;,&quot;druid-s3-extensions&quot;]</code></p>
+</li>
+<li>
+<p>重新启动，就可以看到原来灰色的s3,已经可用。</p>
+</li>
+</ul>
+<p><img src="/img/druid-s3.png" alt="druid"></p>
+<h2 id="a-namefenced-code-block2awsa"><!-- raw HTML omitted -->2.设置AWS凭证<!-- raw HTML omitted --></h2>
+<p><img src="/img/druid-s3-1.png" alt="druid"></p>
+<p>AWS官方推荐使用设置凭证方式.第一种也很方便,直接在driud的
+<code>apache-druid-0.17.0/conf/druid/single-server/micro-quickstart/_common/common.runtime.properties</code> 配置文件中有相应的注释打开设置key即可。</p>
+<p>添加默认的aws配置文件到机器</p>
+<p>默认凭证配置文件–通常位于 <code>~/.aws/credentials</code>（此位置可能因平台而异），此凭证文件由多个 AWS 开发工具包和 AWS CLI 共享。AWS SDK for Java使用 ProfileCredentialsProvider 加载这些凭证。</p>
+<p>在本地系统上的 AWS 凭证配置文件中设置凭证，该配置文件位于：</p>
+<ul>
+<li>
+<p>Linux, macOS, or Unix 上的 <code>~/.aws/credentials</code></p>
+</li>
+<li>
+<p>Windows 上的 C:\Users\USERNAME<code>\.aws\credentials</code></p>
+</li>
+</ul>
+<p>此文件应包含以下格式的行：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">[default]
+aws_access_key_id = your_access_key_id
+aws_secret_access_key = your_secret_access_key
+</code></pre></td></tr></table>
+</div>
+</div><p>用您自己的 AWS 凭证值替换值 <code>your_access_key_id</code> 和 <code>your_secret_access_key</code>。</p>
+<h2 id="a-namefenced-code-block3awsa"><!-- raw HTML omitted -->3.设置AWS区域<!-- raw HTML omitted --></h2>
+<p>如果未选择区域，则默认情况下将使用us-east-1。</p>
+<p>使用设置凭证以设置默认 AWS 区域：</p>
+<p>在本地系统上的 AWS 配置文件中设置 AWS 区域，该文件位于：</p>
+<ul>
+<li>
+<p>Linux, macOS, or Unix 上的 <code>~/.aws/config</code></p>
+</li>
+<li>
+<p>Windows 上的 <code>C:\Users\USERNAME\.aws\config</code></p>
+</li>
+</ul>
+<p>此文件应包含以下格式的行：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">[default]
+region = your_aws_region
+</code></pre></td></tr></table>
+</div>
+</div><p>使用所需的 AWS 区域（例如“us-west-2”）替换 <code>your_aws_region</code>。</p>
+<p>参考:
+<a href="https://druid.apache.org/docs/latest/development/extensions-core/s3.html#reading-data-from-s3">https://druid.apache.org/docs/latest/development/extensions-core/s3.html#reading-data-from-s3</a>
+<a href="https://docs.aws.amazon.com/zh_cn/sdk-for-java/v1/developer-guide/setup-credentials.html">https://docs.aws.amazon.com/zh_cn/sdk-for-java/v1/developer-guide/setup-credentials.html</a></p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">Eric</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2020-04-05
+        
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/druid/">druid</a>
+          <a href="/tags/s3/">s3</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/2020/02/23/superset/">
+            <span class="next-text nav-default">superset 源码安装/pip安装&#43;superset二次开发环境搭建</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div id="utter-container"></div>
+    <script src="https://utteranc.es/client.js"
+        repo= 'Eric0720/blog-comment'
+        issue-term= "title"
+        theme= 'github-light'
+        crossorigin= "anonymous"
+        async>
+    </script>
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="me@eric7.site" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/Eric0720" class="iconfont icon-github" title="github"></a>
+  <a href="http://blog.eric7.site/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> site pv: <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> site uv: <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2018 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Eric</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
