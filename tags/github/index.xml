@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>github on Eric&#39;s blog - Eric博客|Eric liu -大数据学习，大数据分享</title>
+    <link>http://blog.eric7.site/tags/github/</link>
+    <description>Recent content in github on Eric&#39;s blog - Eric博客|Eric liu -大数据学习，大数据分享</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sun, 21 Jun 2020 18:58:53 +0800</lastBuildDate>
+    
+	<atom:link href="http://blog.eric7.site/tags/github/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>github Commit不显示Contribution</title>
+      <link>http://blog.eric7.site/2020/06/21/github_contributions/</link>
+      <pubDate>Sun, 21 Jun 2020 18:58:53 +0800</pubDate>
+      
+      <guid>http://blog.eric7.site/2020/06/21/github_contributions/</guid>
+      <description>Github注册有些年头了，自微软收购GitHub 后，官方宣布了一项重大更新，免费开放私有代码库。才逐渐用的多了起来，一直都是作为个人的代码</description>
+    </item>
+    
+  </channel>
+</rss>
