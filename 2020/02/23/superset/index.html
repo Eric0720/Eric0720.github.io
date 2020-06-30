@@ -48,7 +48,7 @@
 <meta itemprop="description" content="环境： mac 10.15 Catalina &#43; Anaconda 3 &#43; Python3.7 &#43; superset 0.30 Superset 是一款由 Airbnb 开源的“现代化的企业级 BI（商业智能） Web 应用程序”，其通过创建和分享 dashboard，为数据分析提">
 <meta itemprop="datePublished" content="2020-02-23T19:07:14&#43;08:00" />
 <meta itemprop="dateModified" content="2020-02-23T19:07:14&#43;08:00" />
-<meta itemprop="wordCount" content="2483">
+<meta itemprop="wordCount" content="2648">
 
 
 
@@ -122,8 +122,8 @@
       <div class="post-meta">
         <span class="post-time"> 2020-02-23 </span>
         
-          <span class="more-meta"> 2483 words </span>
-          <span class="more-meta"> 5 mins read </span>
+          <span class="more-meta"> 2648 words </span>
+          <span class="more-meta"> 6 mins read </span>
         <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> times read </span>
       </div>
     </header>
@@ -263,14 +263,16 @@ python superset load_examples
 <p>安装nodejs,官网下载安装，<a href="https://nodejs.org/en/">nodejs官网</a>,然后node -v 查看版本，查看正常即可</p>
 </li>
 <li>
-<p>安装cnpm淘宝镜像</p>
+<p>设置npm为淘宝镜像</p>
 </li>
 </ul>
-<p><code>npm install -g cnpm --registry=https://registry.npm.taobao.org</code></p>
+<p><code>npm config set registry https://registry.npm.taobao.org</code></p>
+<pre><code>验证 `npm config get registry`
+</code></pre>
 <ul>
-<li>进入superset/assets目录下,安装编译所需模块,使用淘宝镜像安装</li>
+<li>进入superset/assets目录下（新版目录incubator-superset/superset-frontend/）,安装编译所需模块</li>
 </ul>
-<p><code>cnpm install -d  或  npm install -d </code></p>
+<p><code>cnpm install -d </code></p>
 <p><img src="/img/superset4.png" alt="superset4"></p>
 <ul>
 <li>编译前端文件，并进入前端开发者模式</li>
@@ -285,14 +287,23 @@ python superset load_examples
 npm run dev
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="/img/superset5.png" alt="superset5"></p>
+</div><p>注：如果这两部编译失败，多半是因为nodejs版本过低。可尝试升级nodejs再试。</p>
+<p><img src="/img/superset5.png" alt="superset5"></p>
 <ul>
 <li>运行完npm run dev，命令窗口会停止，不要误以为是执行不下去，保持窗口开启状态即可，一有文件变动时，它会重新编译</li>
 </ul>
 <p>6、把项目导入到pyCharm
 File -&gt; New Project -&gt; Location选择incubator-superset所在目录 -&gt; 选择Existing interpreter -&gt; 选择conda-&gt; 选择你的环境</p>
-<p>7、启动项目
-在 incubator-superset/superset 目录下新建 run.py，添加如下内容:</p>
+<p>7、启动项目</p>
+<p>两种方式都可启动，任选其一。</p>
+<ol>
+<li>
+<p>命令启动superset <code>superset run -h 0.0.0.0 -p 8088</code></p>
+</li>
+<li>
+<p>在 incubator-superset/superset 目录下新建 run.py，添加如下内容:</p>
+</li>
+</ol>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt">1
@@ -562,7 +573,8 @@ superset run -p 8088 --with-threads --reload --debugger
 <h2 id="a-namefenced-code-blocka"><!-- raw HTML omitted -->三.问题与总结<!-- raw HTML omitted --></h2>
 <p>记录：conda pip安装的路径
 /opt/anaconda3/envs/superset/lib/python3.7/site-packages/superset</p>
-<p>1.无法创建管理账户,需要保证email的唯一性，说明这个邮件已经被创建过，换一个邮件创建即可。</p>
+<p>1.无法创建管理账户,需要保证email的唯一性，说明这个邮件已经被创建过，换一个邮件创建即可。
+导致这个问题的原因是：之前安装过superset，没有删除遗留的supeset.db文件。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt">1
@@ -583,11 +595,14 @@ Recognized Database Authentications.
 No user created an error occured
 </code></pre></td></tr></table>
 </div>
-</div><p>2.无法导入数据，superset load_examples 显示拒绝连接</p>
-<pre><code>前天安装还好好的，今天不管是pip,还是源码安装都不行，我以为是我的安装问题
+</div><ol start="2">
+<li>
+<p><code>superset load_examples times out with TimeoutError </code> superset load_examples,无法导入数据,显示拒绝连接</p>
+<p>前天安装还好好的，今天不管是pip,还是源码安装都不行，我以为是我的安装问题
 日志也没有详情，找错了方向，还以为是sqlite无法连接。
-这个问题当误好大功夫。找了好久。。。。
-</code></pre>
+这个问题当误好大功夫。找了好久。。。。</p>
+</li>
+</ol>
 <p>后来找到了github 提交的issue,找到了问题的所在:</p>
 <p>raw.githubusercontent.com域名解析竟然因某些原因给污染了,的确ping raw.githubusercontent.com都是失败的</p>
 <p>参考：</p>
