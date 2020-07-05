@@ -17,7 +17,7 @@
       <pubDate>Tue, 30 Jun 2020 20:56:49 +0800</pubDate>
       
       <guid>http://blog.eric7.site/2020/06/30/superset_optimization/</guid>
-      <description>从以下几个点出发 Gunicorn协程启动，参考官网 a-proper-wsgi-http-server 使用warmup指定预热数据策略。提前对画板进行数据缓存. 修改缓存方式filesyste</description>
+      <description>从以下几个点出发 1. 修改缓存方式为redis 安装Redis pip install redis 修改CACHE_CONFIG为以下内容 1 2 CACHE_CONFIG = { &amp;#39;CACHE_TYPE&amp;#39;: &amp;#39;redis&amp;#39;, &amp;#39;CACHE_DEFAULT_TIMEOUT&amp;#39;: 60 * 60 * 24, # 1 day default (in secs) &amp;#39;CACHE_KEY_PREFIX&amp;#39;:</description>
     </item>
     
     <item>
