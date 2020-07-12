@@ -44,7 +44,7 @@
 <meta property="og:description" content="Stay hungry, stay foolish.  -- Steve Jobs" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="http://blog.eric7.site/" />
-<meta property="og:updated_time" content="2020-06-30T20:56:49+08:00" />
+<meta property="og:updated_time" content="2020-07-12T09:55:20+08:00" />
 <meta itemprop="name" content="Eric&#39;s blog - Eric博客|Eric liu -大数据学习，大数据分享">
 <meta itemprop="description" content="Stay hungry, stay foolish.  -- Steve Jobs"><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Eric&#39;s blog - Eric博客|Eric liu -大数据学习，大数据分享"/>
@@ -111,18 +111,39 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/2020/06/30/superset_optimization/">Superset性能优化</a></h1>
+    <h1 class="post-title"><a class="post-link" href="/2020/07/12/superset_sso/">Superset二次开发-接入SSO</a></h1>
     <div class="post-meta">
-      <span class="post-time"> 2020-06-30 </span>
+      <span class="post-time"> 2020-07-12 </span>
       
-        <span class="more-meta"> 836 words </span>
-        <span class="more-meta"> 2 mins read </span>
+        <span class="more-meta"> 1013 words </span>
+        <span class="more-meta"> 3 mins read </span>
     </div>
   </header>
   
   <div class="post-content">
     <div class="post-summary">
-      从以下几个点出发 1. 修改缓存方式为redis 安装Redis pip install redis 修改CACHE_CONFIG为以下内容 1 2 CACHE_CONFIG = { &#39;CACHE_TYPE&#39;: &#39;redis&#39;, &#39;CACHE_DEFAULT_TIMEOUT&#39;: 60 * 60 * 24, # 1 day default (in secs) &#39;CACHE_KEY_PREFIX&#39;:
+      为了统一和安全考虑，将superset接入公司账号系统，使用员工现有邮箱和密码作为登录方式 env:superset 0.36.0 Superset使用FAB（Flask-App
+    </div>
+    <div class="read-more">
+      <a href="/2020/07/12/superset_sso/" class="read-more-link">Read more...</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/2020/06/30/superset_optimization/">Superset性能优化</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2020-06-30 </span>
+      
+        <span class="more-meta"> 1607 words </span>
+        <span class="more-meta"> 4 mins read </span>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      从以下几个点出发 1. 修改缓存方式为redis 安装Redis pip install redis 修改配置文件incubator-superset/superset/confi
     </div>
     <div class="read-more">
       <a href="/2020/06/30/superset_optimization/" class="read-more-link">Read more...</a>
@@ -294,27 +315,6 @@
     </div>
     <div class="read-more">
       <a href="/2019/12/30/cdh6-3-1%E5%BC%80%E5%90%AFkerberos/" class="read-more-link">Read more...</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/2019/12/19/mac-hexo-test/">mac-hexo-test</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2019-12-19 </span>
-      
-        <span class="more-meta"> 38 words </span>
-        <span class="more-meta"> 1 min read </span>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      迁移博客window==&gt;mac 今天是12.19 距离2020还有12天
-    </div>
-    <div class="read-more">
-      <a href="/2019/12/19/mac-hexo-test/" class="read-more-link">Read more...</a>
     </div>
   </div>
 </article>

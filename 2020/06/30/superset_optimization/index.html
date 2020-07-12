@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="Eric" /><meta name="description" content="从以下几个点出发 1. 修改缓存方式为redis 安装Redis pip install redis 修改CACHE_CONFIG为以下内容 1 2 CACHE_CONFIG = { &amp;#39;CACHE_TYPE&amp;#39;: &amp;#39;redis&amp;#39;, &amp;#39;CACHE_DEFAULT_TIMEOUT&amp;#39;: 60 * 60 * 24, # 1 day default (in secs) &amp;#39;CACHE_KEY_PREFIX&amp;#39;:" /><meta name="keywords" content="Hugo, theme, even" />
+<meta name="author" content="Eric" /><meta name="description" content="从以下几个点出发 1. 修改缓存方式为redis 安装Redis pip install redis 修改配置文件incubator-superset/superset/confi" /><meta name="keywords" content="Hugo, theme, even" />
 
 
 
@@ -39,22 +39,22 @@
 
 
 <meta property="og:title" content="Superset性能优化" />
-<meta property="og:description" content="从以下几个点出发 1. 修改缓存方式为redis 安装Redis pip install redis 修改CACHE_CONFIG为以下内容 1 2 CACHE_CONFIG = { &#39;CACHE_TYPE&#39;: &#39;redis&#39;, &#39;CACHE_DEFAULT_TIMEOUT&#39;: 60 * 60 * 24, # 1 day default (in secs) &#39;CACHE_KEY_PREFIX&#39;:" />
+<meta property="og:description" content="从以下几个点出发 1. 修改缓存方式为redis 安装Redis pip install redis 修改配置文件incubator-superset/superset/confi" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://blog.eric7.site/2020/06/30/superset_optimization/" />
 <meta property="article:published_time" content="2020-06-30T20:56:49+08:00" />
 <meta property="article:modified_time" content="2020-06-30T20:56:49+08:00" />
 <meta itemprop="name" content="Superset性能优化">
-<meta itemprop="description" content="从以下几个点出发 1. 修改缓存方式为redis 安装Redis pip install redis 修改CACHE_CONFIG为以下内容 1 2 CACHE_CONFIG = { &#39;CACHE_TYPE&#39;: &#39;redis&#39;, &#39;CACHE_DEFAULT_TIMEOUT&#39;: 60 * 60 * 24, # 1 day default (in secs) &#39;CACHE_KEY_PREFIX&#39;:">
+<meta itemprop="description" content="从以下几个点出发 1. 修改缓存方式为redis 安装Redis pip install redis 修改配置文件incubator-superset/superset/confi">
 <meta itemprop="datePublished" content="2020-06-30T20:56:49&#43;08:00" />
 <meta itemprop="dateModified" content="2020-06-30T20:56:49&#43;08:00" />
-<meta itemprop="wordCount" content="836">
+<meta itemprop="wordCount" content="1607">
 
 
 
 <meta itemprop="keywords" content="superset," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Superset性能优化"/>
-<meta name="twitter:description" content="从以下几个点出发 1. 修改缓存方式为redis 安装Redis pip install redis 修改CACHE_CONFIG为以下内容 1 2 CACHE_CONFIG = { &#39;CACHE_TYPE&#39;: &#39;redis&#39;, &#39;CACHE_DEFAULT_TIMEOUT&#39;: 60 * 60 * 24, # 1 day default (in secs) &#39;CACHE_KEY_PREFIX&#39;:"/>
+<meta name="twitter:description" content="从以下几个点出发 1. 修改缓存方式为redis 安装Redis pip install redis 修改配置文件incubator-superset/superset/confi"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -122,8 +122,8 @@
       <div class="post-meta">
         <span class="post-time"> 2020-06-30 </span>
         
-          <span class="more-meta"> 836 words </span>
-          <span class="more-meta"> 2 mins read </span>
+          <span class="more-meta"> 1607 words </span>
+          <span class="more-meta"> 4 mins read </span>
         <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> times read </span>
       </div>
     </header>
@@ -136,8 +136,8 @@
     <li>
       <ul>
         <li><a href="#1-redis">1. 修改缓存方式为redis</a></li>
-        <li><a href="#2-warmup">2. 使用warmup指定预热数据策略。提前对画板进行数据缓存.</a></li>
-        <li><a href="#3-celery-brokersqliteredis">3. 修改celery BROKER数据库sqlite为redis</a></li>
+        <li><a href="#2-celery-brokersqliteredis">2. 修改celery BROKER数据库sqlite为redis</a></li>
+        <li><a href="#3-warmup">3. 使用warmup指定预热数据策略。提前对画板进行数据缓存.</a></li>
         <li><a href="#4-">4. 缓存的配置行数，将数据调大。</a></li>
         <li><a href="#5-">5. 不同链接方式查询时间或许有差异。</a></li>
         <li><a href="#6-gunicorn">6. Gunicorn协程启动，</a></li>
@@ -152,7 +152,7 @@
 <p>从以下几个点出发</p>
 <h3 id="1-redis">1. 修改缓存方式为redis</h3>
 <p>安装Redis <code>pip install redis</code></p>
-<p>修改CACHE_CONFIG为以下内容</p>
+<p>修改配置文件<code>incubator-superset/superset/config.py</code>中CACHE_CONFIG为以下内容,设置24小时过期</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt">1
@@ -163,47 +163,28 @@
 
 </code></pre></td></tr></table>
 </div>
-</div><h3 id="2-warmup">2. 使用warmup指定预热数据策略。提前对画板进行数据缓存.</h3>
-<p>每小时更新最近七天top5的dashboard的缓存数据</p>
-<p>替换CELERYBEAT_SCHEDULE为以下内容</p>
+</div><h3 id="2-celery-brokersqliteredis">2. 修改celery BROKER数据库sqlite为redis</h3>
+<p>配置文件：/root/incubator-superset/superset/config.py
+修改以下内容：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">CELERYBEAT_SCHEDULE = {
-    &#39;cache-warmup-hourly&#39;: {
-        &#39;task&#39;: &#39;cache-warmup&#39;,
-        &#39;schedule&#39;: crontab(minute=0, hour=&#39;*&#39;),  # hourly
-        &#39;kwargs&#39;: {
-            &#39;strategy_name&#39;: &#39;top_n_dashboards&#39;,
-            &#39;top_n&#39;: 5,
-            &#39;since&#39;: &#39;7 days ago&#39;,
-        },
-    },
-}
-
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">BROKER_URL = &#39;redis://localhost:6379/0&#39;
+CELERY_RESULT_BACKEND = &#39;redis://localhost:6379/0&#39;
+CELERY_ACKS_LATE = True
+#关闭utc时区，添加上海时区
+CELERY_ENABLE_UTC = False
+CELERY_TIMEZONE = &#39;Asia/Shanghai&#39;
 </code></pre></td></tr></table>
 </div>
-</div><h3 id="3-celery-brokersqliteredis">3. 修改celery BROKER数据库sqlite为redis</h3>
-<p>修改415行</p>
-<p><code>BROKER_URL = 'redis://localhost:6379/0'</code></p>
-<p>修改417行</p>
-<p><code>CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'</code></p>
-<p>修改420行</p>
-<p><code>CELERY_ACKS_LATE = True</code></p>
-<p>完整内容：</p>
+</div><p>完整内容：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1
@@ -236,6 +217,13 @@
 </span><span class="lnt">28
 </span><span class="lnt">29
 </span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-fallback" data-lang="fallback">class CeleryConfig(object):
@@ -248,6 +236,8 @@
     CELERYD_LOG_LEVEL = &#39;DEBUG&#39;
     CELERYD_PREFETCH_MULTIPLIER = 10
     CELERY_ACKS_LATE = True
+    CELERY_ENABLE_UTC = False
+    CELERY_TIMEZONE = &#39;Asia/Shanghai&#39;
     CELERY_ANNOTATIONS = {
         &#39;sql_lab.get_sql_results&#39;: {
             &#39;rate_limit&#39;: &#39;100/s&#39;,
@@ -260,9 +250,14 @@
         },
     }
     CELERYBEAT_SCHEDULE = {
-        &#39;email_reports.schedule_hourly&#39;: {
-            &#39;task&#39;: &#39;email_reports.schedule_hourly&#39;,
-            &#39;schedule&#39;: crontab(minute=1, hour=&#39;*&#39;),
+        &#39;cache-warmup-hourly&#39;: {
+            &#39;task&#39;: &#39;cache-warmup&#39;,
+            &#39;schedule&#39;: crontab(minute=0,hour=&#39;*/2&#39;),  # hourly
+            &#39;kwargs&#39;: {
+                &#39;strategy_name&#39;: &#39;top_n_dashboards&#39;,
+                &#39;top_n&#39;: 10,
+                &#39;since&#39;: &#39;7 days ago&#39;,
+            },
         },
     }
 
@@ -270,21 +265,80 @@ CELERY_CONFIG = CeleryConfig
 
 </code></pre></td></tr></table>
 </div>
-</div><h3 id="4-">4. 缓存的配置行数，将数据调大。</h3>
+</div><h3 id="3-warmup">3. 使用warmup指定预热数据策略。提前对画板进行数据缓存.</h3>
+<p>1.修改配置文件：/root/incubator-superset/superset/config.py</p>
+<p>替换CELERYBEAT_SCHEDULE为以下内容,以下策略为,每小时更新最近七天top5的dashboard的缓存数据</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">CELERYBEAT_SCHEDULE = {
+    &#39;cache-warmup-hourly&#39;: {
+        &#39;task&#39;: &#39;cache-warmup&#39;,
+        &#39;schedule&#39;: crontab(minute=0, hour=&#39;*&#39;),  # hourly
+        &#39;kwargs&#39;: {
+            &#39;strategy_name&#39;: &#39;top_n_dashboards&#39;,
+            &#39;top_n&#39;: 5,
+            &#39;since&#39;: &#39;7 days ago&#39;,
+        },
+    },
+}
+
+</code></pre></td></tr></table>
+</div>
+</div><p>2.修改配置文件中默认访问地址和端口，后台会通过地址，进行缓存数据，修改为和命令行启动端口一致。</p>
+<p>配置文件：<code>/root/incubator-superset/superset/config.py</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">SUPERSET_WEBSERVER_ADDRESS = &#39;0.0.0.0&#39;
+SUPERSET_WEBSERVER_PORT = 7668
+
+</code></pre></td></tr></table>
+</div>
+</div><p>这里需要注意，0.35 ADDRESS 为0.0.0.0时会报错。需要添加前缀 http://0.0.0.0</p>
+<p>官方bug：<a href="https://github.com/apache/incubator-superset/issues/8461">https://github.com/apache/incubator-superset/issues/8461</a></p>
+<p>然后命令启动celery：启动work，-c 并发的work数</p>
+<p><code>celery worker --app=superset.tasks.celery_app:app  --broker=redis://localhost:6379/0  --pool=prefork -O fair -c 4</code></p>
+<p>启动定时调度：</p>
+<p><code>celery beat --app=superset.tasks.celery_app:app</code></p>
+<p>任务监控celery,ui(可选择安装)</p>
+<p>安装：<code>pip install flower</code></p>
+<p>启动：<code>celery flower --port=7788 --broker=redis://localhost:6379/0</code></p>
+<h3 id="4-">4. 缓存的配置行数，将数据调大。</h3>
 <p>需改配置文件：</p>
 <p><code>env_superset/lib/python3.7/site-packages/flask_caching/__init__.py</code></p>
 <p>修改行：</p>
-<p><code>config.setdefault(&quot;CACHE_THRESHOLD&quot;, 500000)</code></p>
+<p><code>config.setdefault(&quot;CACHE_THRESHOLD&quot;, 50000)</code></p>
 <h3 id="5-">5. 不同链接方式查询时间或许有差异。</h3>
 <p>经过测试superset 连接AWS Athena  athena+rest比jdbc会稍慢。</p>
 <p>且查询大部分时间是消耗在了数据返回到前台展示的时间，理解是解析耗时。</p>
+<p>查看官方支持的连接方式，<a href="http://superset.apache.org/installation.html#database-dependencies">http://superset.apache.org/installation.html#database-dependencies</a>，对比查询用时。</p>
 <h3 id="6-gunicorn">6. Gunicorn协程启动，</h3>
 <p>生产环境不要使用superset run的启动方式，Gunicorn协程启动，参考官网 <a href="http://superset.apache.org/installation.html#a-proper-wsgi-http-server">a-proper-wsgi-http-server</a></p>
 <p>安装gunicorn和gevent</p>
 <p><code>pip install gunicorn</code></p>
 <p><code>pip install gevent</code></p>
-<p>这里需要注意版本问题，superset0.30需要 gunicorn&lt;19.9.0,但gunicorn由于向后不兼容的更改，Gunicorn在Python 3.7上中断，19.9.0才修复了该问题。</p>
-<p>如果启动superset报错，升级gunicorn和superset：</p>
+<ul>
+<li>这里需要注意版本问题，superset0.30需要 gunicorn&lt;19.9.0,但gunicorn由于向后不兼容的更改，Gunicorn在Python 3.7上中断，19.9.0才修复了该问题。</li>
+</ul>
+<p>如果启动superset报错<code>from gunicorn.workers.async import AsyncWorker</code>，升级gunicorn和superset：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1
@@ -333,6 +387,9 @@ SyntaxError: invalid syntax
 <p><a href="https://github.com/apache/incubator-superset/issues/8349">https://github.com/apache/incubator-superset/issues/8349</a>
 <a href="https://github.com/benoitc/gunicorn/issues/1822">https://github.com/benoitc/gunicorn/issues/1822</a></p>
 <p>启动命令：</p>
+<ul>
+<li>注意：在不加-D执行下才会输出superset程序日志。</li>
+</ul>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1
@@ -345,21 +402,82 @@ SyntaxError: invalid syntax
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">gunicorn \
-      -w 10 \
-      -k gevent \
-      --timeout 120 \
-      -b  0.0.0.0:7668 \
-      --limit-request-line 0 \
-      --limit-request-field_size 0 \
-      --statsd-host localhost:8125 \
-      &#34;superset.app:create_app()&#34;
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">#-D 后台执行
+#-w 启动进程数
+#--log-level debug 日志级别
+#--access-logfile /tmp/superset_access.log 指定access请求日志路径
+#--error-logfile /tmp/superset_error.log 指定请求错误日志路径
+        
+      
+前台启动：
+gunicorn  -w 10 -k gevent --timeout 120 -b 0.0.0.0:7668 --limit-request-line 0 --limit-request-field_size 0 &#34;superset.app:create_app()&#34;
+
+
+
+后台执行：
+superset 0.35.0
+gunicorn \
+    -w 10 \
+    --timeout 120 \
+    -b 0.0.0.0:7668 \
+    --limit-request-line 0 \
+    --limit-request-field_size 0 \
+    --forwarded-allow-ips=* 
+    --log-level debug 
+    --access-logfile /tmp/superset_access.log 
+    --error-logfile /tmp/superset_error.log 
+    superset:app -D
+    
+    
+superset 0.36.0
+gunicorn \
+    -w 10 \
+    --timeout 120 \
+    -b 0.0.0.0:7668 \
+    --limit-request-line 0 \
+    --limit-request-field_size 0 \
+    --forwarded-allow-ips=* 
+    --log-level debug 
+    --access-logfile /tmp/superset_access.log 
+    --error-logfile /tmp/superset_error.log 
+    &#34;superset.app:create_app()&#34; -D
 
 </code></pre></td></tr></table>
 </div>
-</div>
+</div><p>停止命令：kill <code>ps aux | grep  &quot;gunicorn&quot; | grep -v 'grep' |  awk '{print $2}'</code></p>
+
     </div>
 
     <div class="post-copyright">
@@ -385,7 +503,11 @@ SyntaxError: invalid syntax
           <a href="/tags/superset/">superset</a>
           </div>
       <nav class="post-nav">
-        
+        <a class="prev" href="/2020/07/12/superset_sso/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Superset二次开发-接入SSO</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
         <a class="next" href="/2020/06/21/github_contributions/">
             <span class="next-text nav-default">Github commit不统计Contribution</span>
             <span class="next-text nav-mobile">Next</span>

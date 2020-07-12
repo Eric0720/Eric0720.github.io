@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Superset二次开发-接入SSO - Eric&#39;s blog - Eric博客|Eric liu -大数据学习，大数据分享</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Eric" /><meta name="description" content="为了统一和安全考虑，将superset接入公司账号系统，使用员工现有邮箱和密码作为登录方式 env:superset 0.36.0 Superset使用FAB（Flask-App" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.62.1 with theme even" />
+
+
+<link rel="canonical" href="http://blog.eric7.site/2020/07/12/superset_sso/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Superset二次开发-接入SSO" />
+<meta property="og:description" content="为了统一和安全考虑，将superset接入公司账号系统，使用员工现有邮箱和密码作为登录方式 env:superset 0.36.0 Superset使用FAB（Flask-App" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://blog.eric7.site/2020/07/12/superset_sso/" />
+<meta property="article:published_time" content="2020-07-12T09:55:20+08:00" />
+<meta property="article:modified_time" content="2020-07-12T09:55:20+08:00" />
+<meta itemprop="name" content="Superset二次开发-接入SSO">
+<meta itemprop="description" content="为了统一和安全考虑，将superset接入公司账号系统，使用员工现有邮箱和密码作为登录方式 env:superset 0.36.0 Superset使用FAB（Flask-App">
+<meta itemprop="datePublished" content="2020-07-12T09:55:20&#43;08:00" />
+<meta itemprop="dateModified" content="2020-07-12T09:55:20&#43;08:00" />
+<meta itemprop="wordCount" content="1013">
+
+
+
+<meta itemprop="keywords" content="superset," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Superset二次开发-接入SSO"/>
+<meta name="twitter:description" content="为了统一和安全考虑，将superset接入公司账号系统，使用员工现有邮箱和密码作为登录方式 env:superset 0.36.0 Superset使用FAB（Flask-App"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Eric&#39;s blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Eric&#39;s blog</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Superset二次开发-接入SSO</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-07-12 </span>
+        
+          <span class="more-meta"> 1013 words </span>
+          <span class="more-meta"> 3 mins read </span>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> times read </span>
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1">1.首先是配置</a></li>
+        <li><a href="#2">2.修改登录页</a></li>
+        <li><a href="#3securitymanager">3.自定义方法继承SecurityManager</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p>为了统一和安全考虑，将superset接入公司账号系统，使用员工现有邮箱和密码作为登录方式
+env:superset 0.36.0</p>
+</blockquote>
+<p><img src="/img/superset13.png" alt="superset6"></p>
+<p>Superset使用FAB（Flask-Appbuilder）实现了用户权限功能，登录认证框架。</p>
+<p>FAB支持以下几种认证方式：</p>
+<p><img src="/img/superset_sso1.png" alt="superset13"></p>
+<p>这里使用的是REMOTE_USER方式，通过调用remote server api,从remote web server获取用户的认证信息，也就是公司的登录系统，认证通过则将用户信息保存到db中，只要验证用户的session没有过期，就可以直接访问网站。授权验证通过后，通过appbuilder.sm.add_user，将用户添加到superset用户库中，后面进行该用户的应用内权限管理。</p>
+<h3 id="1">1.首先是配置</h3>
+<p>通过阅读superset/config.py中的代码, 如果需要自行修改配置, 创建superset_config.py文件。</p>
+<p>在superset 创建自定义配置文件 superset_config.py</p>
+<p>添加以下内容，替换默认CUSTOM_SECURITY_MANAGER中使用的SecurityManager. 然后写一个CustomSecurityManager类去继承SecurityManager,</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">from superset.custom_security import CustomSecurityManager
+CUSTOM_SECURITY_MANAGER = CustomSecurityManager
+
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="2">2.修改登录页</h3>
+<p>/root/incubator-superset/superset/templates/appbuilder/navbar_right.html</p>
+<p>主要是为了修改登录和登出按钮的连接跳转。</p>
+<p>修改为以下内容：
+将110行注释，替换
+将125行注释替换，添加124行</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">109             &lt;li&gt;&lt;a href=&#34;{{appbuilder.get_url_for_userinfo}}&#34;&gt;&lt;span class=&#34;fa fa-fw fa-user&#34;&gt;&lt;/span&gt;{{_(&#34;Profile&#34;)}}&lt;/a&gt;&lt;/li&gt;
+110             &lt;li&gt;&lt;a href=&#34;/sso/logout&#34;&gt;&lt;span class=&#34;fa fa-fw fa-sign-out&#34;&gt;&lt;/span&gt;{{_(&#34;Logout&#34;)}}&lt;/a&gt;&lt;/li&gt;
+111             &lt;!--&lt;li&gt;&lt;a href=&#34;{{appbuilder.get_url_for_logout}}&#34;&gt;&lt;span class=&#34;fa fa-fw fa-sign-out&#34;&gt;&lt;/span&gt;{{_(&#34;Logout&#34;)}}&lt;/a&gt;&lt;/li&gt;--&gt;
+123 {% else %}
+124     &lt;li&gt;&lt;a href=&#34;/sso/login&#34;&gt;
+125     &lt;!--&lt;li&gt;&lt;a href=&#34;{{appbuilder.get_url_for_login}}&#34;&gt;--&gt;
+126     &lt;i class=&#34;fa fa-fw fa-sign-in&#34;&gt;&lt;/i&gt;SSO_{{_(&#34;Login&#34;)}}&lt;/a&gt;&lt;/li&gt;
+127 {% endif %}
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="3securitymanager">3.自定义方法继承SecurityManager</h3>
+<p>写一个custom_security.py类去继承SecurityManager, 重写一些view自定义登录效果。</p>
+<p>在superset目录新建custom_security.py脚本。</p>
+<ul>
+<li>每次将请求中的ticket，向remote server进行验证，如果有效，直接登录成功，否则重新登录sso进行授权。成功授权后判断用户是否已经出现在superset用户库中，如果没有添加该用户，指定账户名为用户名，密码默认为用户名。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">from flask import redirect, g, flash, request
+from flask_appbuilder.security.views import UserDBModelView,AuthDBView
+from superset.security import SupersetSecurityManager
+from flask_appbuilder.security.views import expose
+from flask_appbuilder.security.manager import BaseSecurityManager
+from flask_login import login_user, logout_user
+import requests
+import superset_config
+class CustomAuthDBView(AuthDBView):
+    @expose(&#39;/sso/login/&#39;, methods=[&#39;GET&#39;])
+    def sso_login(self):
+        print(&#34;------------ login&#34;, request.args)
+        if request.args.get(&#39;ticket&#39;) is not None:
+            r = requests.get(**login_url**, verify=False)
+            print(&#34;------------ validate&#34;, r.json()[&#39;username&#39;])
+            username = r.json()[&#39;username&#39;]
+            user = self.appbuilder.sm.find_user(username=username)
+            if user is not None:
+                print(&#34;------------ find user&#34;, user)
+                login_user(user, remember=False)
+                return redirect(self.appbuilder.get_url_for_index)
+            else:
+                user = self.appbuilder.sm.add_user(
+                    username=username,
+                    first_name=username.split(&#39;.&#39;)[0],
+                    last_name=username.split(&#39;.&#39;)[1],
+                    password = username,
+                    email=username,
+                    role=self.appbuilder.sm.find_role(self.appbuilder.sm.auth_user_registration_role))
+                print(&#34;------------ new user&#34;, user)
+                login_user(user, remember=False)
+                return redirect(self.appbuilder.get_url_for_index)
+        else:
+            return redirect(***login_url***)
+    @expose(&#39;/sso/logout/&#39;, methods=[&#39;GET&#39;])
+    def sso_logout(self):
+        print(&#34;------------ logout&#34;, logout_url)
+        return redirect(**logout_url**)
+class CustomSecurityManager(SupersetSecurityManager):
+    authdbview = CustomAuthDBView
+    def __init__(self, appbuilder):
+        super(CustomSecurityManager, self).__init__(appbuilder)
+</code></pre></td></tr></table>
+</div>
+</div><p>刷新superset,查看登录页面右上角登录按钮。</p>
+<p>参考 ：</p>
+<ul>
+<li><a href="https://juejin.im/post/5adff757518825673446b2e1">https://juejin.im/post/5adff757518825673446b2e1</a></li>
+</ul>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">Eric</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2020-07-12
+        
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></span>
+  </p>
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/superset/">superset</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/2020/06/30/superset_optimization/">
+            <span class="next-text nav-default">Superset性能优化</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div id="utter-container"></div>
+    <script src="https://utteranc.es/client.js"
+        repo= 'Eric0720/blog-comment'
+        issue-term= "title"
+        theme= 'github-light'
+        crossorigin= "anonymous"
+        async>
+    </script>
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="me@eric7.site" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/Eric0720" class="iconfont icon-github" title="github"></a>
+  <a href="http://blog.eric7.site/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> site pv: <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> site uv: <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2018 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Eric</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
