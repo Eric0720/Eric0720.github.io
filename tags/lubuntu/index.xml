@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>lubuntu on Eric&#39;s blog - Eric博客|Eric liu -大数据学习，大数据分享</title>
+    <link>http://blog.eric7.site/tags/lubuntu/</link>
+    <description>Recent content in lubuntu on Eric&#39;s blog - Eric博客|Eric liu -大数据学习，大数据分享</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 20 Nov 2021 14:54:02 +0800</lastBuildDate>
+    
+	<atom:link href="http://blog.eric7.site/tags/lubuntu/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>xiaomi cyberdog 配置 VNC 远程桌面</title>
+      <link>http://blog.eric7.site/2021/11/20/lubuntu_vnc/</link>
+      <pubDate>Sat, 20 Nov 2021 14:54:02 +0800</pubDate>
+      
+      <guid>http://blog.eric7.site/2021/11/20/lubuntu_vnc/</guid>
+      <description>lubuntu配置 VNC 环境：mac , lubuntu 1.安装vnc服务 cyberdog开机,进入其命令行 1 ssh 192.168.2.180 -l mi 安装tightvncserver 1 sudo apt install tightvncserver</description>
+    </item>
+    
+  </channel>
+</rss>

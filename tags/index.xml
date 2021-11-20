@@ -6,10 +6,28 @@
     <description>Recent content in Tags on Eric&#39;s blog - Eric博客|Eric liu -大数据学习，大数据分享</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 12 Jul 2020 09:55:20 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 20 Nov 2021 14:54:02 +0800</lastBuildDate>
     
 	<atom:link href="http://blog.eric7.site/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>lubuntu</title>
+      <link>http://blog.eric7.site/tags/lubuntu/</link>
+      <pubDate>Sat, 20 Nov 2021 14:54:02 +0800</pubDate>
+      
+      <guid>http://blog.eric7.site/tags/lubuntu/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>机器人</title>
+      <link>http://blog.eric7.site/tags/%E6%9C%BA%E5%99%A8%E4%BA%BA/</link>
+      <pubDate>Sat, 20 Nov 2021 14:54:02 +0800</pubDate>
+      
+      <guid>http://blog.eric7.site/tags/%E6%9C%BA%E5%99%A8%E4%BA%BA/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>superset</title>
